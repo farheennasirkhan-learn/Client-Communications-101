@@ -1,7 +1,7 @@
 <html lang="en"><head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Managing Expectations — Early and Honest</title>
+<title>Status Reporting — The STATUS Framework (Part 2)</title>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500&display=swap');
 
@@ -10,6 +10,7 @@
     --glow: rgba(37, 99, 235, 0.15);
     --rose: #e11d48;
     --rose-soft: rgba(225,29,72,0.10);
+    --amber: #f59e0b;
     --green: #16a34a;
     --bg: #ffffff;
     --surface: #f8fafc;
@@ -30,112 +31,127 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 48px 24px;
+    padding: 56px 24px;
     line-height: 1.6;
   }
 
-  .deck { width: 100%; max-width: 1020px; }
-
-  /* ─── TOOLBAR / PRESENTER ─── */
-  .toolbar { display: flex; justify-content: flex-end; margin-bottom: 8px; }
-  .pres-toggle { display: inline-flex; align-items: center; gap: 8px; font-family: inherit; font-size: 12.5px; font-weight: 700; color: var(--muted); background: var(--surface); border: 1px solid var(--border); border-radius: 999px; padding: 7px 14px; cursor: pointer; transition: all 0.25s ease; }
-  .pres-toggle:hover, .pres-toggle.on { color: var(--primary); border-color: var(--primary); background: rgba(37,99,235,0.06); }
-  .pres-toggle svg { width: 15px; height: 15px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
-  .presenter { display: none; opacity: 0; transform: translateY(-8px); transition: opacity 0.3s ease, transform 0.3s ease; }
-  .presenter.show { opacity: 1; transform: translateY(0); }
-  .presenter-inner { position: relative; background: #0f172a; color: #e2e8f0; border-radius: 16px; padding: 22px 26px; margin-bottom: 22px; overflow: hidden; }
-  .presenter-inner::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 5px; background: var(--primary); }
-  .pres-eyebrow { display: inline-flex; align-items: center; gap: 8px; font-size: 10.5px; font-weight: 800; letter-spacing: 1.5px; text-transform: uppercase; color: #93c5fd; margin-bottom: 14px; }
-  .pres-grid { display: flex; gap: 24px; flex-wrap: wrap; }
-  .pres-col { flex: 1 1 240px; }
-  .pres-h { font-size: 11px; font-weight: 800; letter-spacing: 1px; text-transform: uppercase; color: #93c5fd; margin-bottom: 6px; }
-  .pres-col p { font-size: 13.5px; line-height: 1.55; margin: 0 0 8px; color: #cbd5e1; }
-  .pres-col .quote { color: #fff; font-style: italic; border-left: 2px solid #334155; padding-left: 10px; }
-  .pres-meta { font-family: 'JetBrains Mono', monospace; font-size: 11.5px; color: #64748b; }
+  .deck { width: 100%; max-width: 1080px; }
 
   /* ─── HEADER ─── */
-  .head { max-width: 720px; margin: 0 auto 34px; text-align: center; }
-  .label { display: inline-flex; align-items: center; gap: 10px; font-size: 11px; font-weight: 800; letter-spacing: 2px; text-transform: uppercase; color: var(--primary); margin-bottom: 14px; opacity: 0; animation: fadeDown 0.8s ease 0.1s both; }
+  .head { max-width: 760px; margin: 0 auto 34px; text-align: center; }
+  .label {
+    display: inline-flex; align-items: center; gap: 10px;
+    font-size: 13px; font-weight: 800; letter-spacing: 2px;
+    text-transform: uppercase; color: var(--primary); margin-bottom: 16px;
+    opacity: 0; animation: fadeDown 0.8s ease 0.1s both;
+  }
   .label .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--primary); }
-  .headline { font-size: 40px; font-weight: 900; letter-spacing: -0.03em; line-height: 1.1; color: var(--headline); margin: 0 0 12px; opacity: 0; animation: fadeDown 0.8s ease 0.25s both; }
-  .thesis { font-size: 17px; color: var(--body); margin: 0; opacity: 0; animation: fadeDown 0.8s ease 0.4s both; }
-  .thesis b { color: var(--primary); font-weight: 700; }
+  .headline {
+    font-size: 41px; font-weight: 900; letter-spacing: -0.03em;
+    line-height: 1.1; color: var(--headline); margin: 0;
+    opacity: 0; animation: fadeDown 0.8s ease 0.25s both;
+  }
 
-  /* ─── SCENE (sentence-stacked, airy) ─── */
-  .scene { position: relative; background: var(--surface); border: 1px solid var(--border); border-radius: 20px; padding: 28px 34px 30px; margin-bottom: 34px; overflow: hidden; opacity: 0; animation: scaleIn 0.7s ease 0.5s both; }
-  .scene::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 6px; background: var(--primary); }
-  .scene-top { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 18px; flex-wrap: wrap; }
-  .scene-tag { display: inline-flex; align-items: center; gap: 9px; font-family: 'JetBrains Mono', monospace; font-size: 11.5px; font-weight: 600; color: var(--primary); }
-  .scene-tag .live { width: 7px; height: 7px; border-radius: 50%; background: var(--rose); animation: pulse 1.8s ease-in-out infinite; }
-  .scene-distill { font-size: 13px; font-weight: 800; color: var(--rose); background: var(--rose-soft); border-radius: 999px; padding: 5px 13px; }
-  .scene-lines { max-width: 64ch; }
-  .scene-lines p { margin: 0 0 14px; font-size: 15px; color: var(--body); line-height: 1.7; }
-  .scene-lines p:last-child { margin-bottom: 0; }
-  .scene-lines b { color: var(--headline); font-weight: 700; }
-  .scene-lines .day { color: var(--primary); font-weight: 700; }
-  .scene-think { font-style: italic; color: var(--body); border-left: 3px solid #cbd5e1; padding: 4px 0 4px 16px; }
-  .scene-punch { color: var(--rose); font-weight: 800; font-size: 16px !important; }
+  /* ─── SETUP ─── */
+  .setup { display: flex; gap: 24px; align-items: stretch; margin-bottom: 38px; }
+  .col-scene { flex: 1.15; }
+  .col-insight { flex: 1; }
 
-  /* ─── RULES: SKIM TILES ─── */
-  .rules-head { text-align: center; margin-bottom: 20px; opacity: 0; animation: fadeDown 0.8s ease 0.7s both; }
-  .rules-head .eyebrow { font-size: 11px; font-weight: 800; letter-spacing: 2px; text-transform: uppercase; color: var(--primary); }
-  .rules-head h2 { font-size: 25px; font-weight: 900; letter-spacing: -0.02em; color: var(--headline); margin: 8px 0 0; }
+  .scene { height: 100%; background: var(--bg); border: 1px solid var(--border); border-radius: 20px; overflow: hidden; display: flex; flex-direction: column; opacity: 0; animation: scaleIn 0.7s ease 0.45s both; }
+  .scene-bar { display: flex; align-items: center; gap: 9px; padding: 13px 18px; background: var(--surface); border-bottom: 1px solid var(--border); font-family: 'JetBrains Mono', monospace; font-size: 13px; color: var(--muted); }
+  .scene-bar .live { width: 7px; height: 7px; border-radius: 50%; background: var(--amber); }
+  .scene-inner { padding: 18px 20px 20px; }
+  .scene-from { font-size: 14px; color: var(--muted); margin-bottom: 12px; }
+  .scene-from b { color: var(--headline); font-weight: 700; }
+  .scene-quote { font-size: 15.5px; color: var(--body); line-height: 1.65; font-style: italic; padding: 13px 15px; background: var(--surface); border-left: 3px solid #cbd5e1; border-radius: 0 10px 10px 0; }
+  .vague { color: var(--rose); border-bottom: 1px dotted rgba(225,29,72,0.55); font-style: italic; }
+  .scene-react { margin-top: 14px; font-size: 15px; color: var(--body); line-height: 1.6; }
+  .scene-react .note { color: var(--headline); font-weight: 700; }
+  .trust { display: inline-flex; align-items: center; gap: 7px; margin-top: 11px; font-size: 14.5px; font-weight: 800; color: var(--rose); background: var(--rose-soft); border: 1px solid rgba(225,29,72,0.2); border-radius: 999px; padding: 6px 12px; }
+  .trust svg { width: 14px; height: 14px; stroke: var(--rose); fill: none; stroke-width: 2.3; stroke-linecap: round; stroke-linejoin: round; }
 
-  .tiles { display: flex; gap: 16px; align-items: stretch; margin-bottom: 18px; }
-  .tile { position: relative; flex: 1 1 0; min-width: 0; background: var(--bg); border: 1px solid var(--border); border-radius: 18px; padding: 22px 22px 20px; cursor: pointer; outline: none; transition: opacity 350ms cubic-bezier(0.4,0,0.2,1), transform 350ms cubic-bezier(0.4,0,0.2,1), border-color 350ms ease, box-shadow 350ms ease, filter 350ms ease; opacity: 0; }
-  .tile.intro { animation: scaleIn 0.55s ease both; }
-  .tile.intro.t1 { animation-delay: 0.82s; }
-  .tile.intro.t2 { animation-delay: 0.92s; }
-  .tile.intro.t3 { animation-delay: 1.02s; }
-  .tiles.has-active .tile:not(.active) { opacity: 0.5; filter: saturate(0.55) blur(1px); transform: scale(0.98); }
-  .tile.active { opacity: 1; filter: none; transform: translateY(-5px) scale(1.02); border-color: var(--primary); box-shadow: 0 16px 32px -12px var(--glow), 0 0 0 4px rgba(37,99,235,0.06); }
-  .tile-top { display: flex; align-items: center; gap: 12px; margin-bottom: 14px; }
-  .tile-icon { width: 42px; height: 42px; border-radius: 12px; background: var(--surface); display: flex; align-items: center; justify-content: center; transition: background 0.35s ease; flex-shrink: 0; }
-  .tile-icon svg { width: 21px; height: 21px; stroke: var(--primary); fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; transition: stroke 0.35s ease; }
-  .tile.active .tile-icon { background: var(--primary); }
-  .tile.active .tile-icon svg { stroke: #fff; }
-  .tile-num { margin-left: auto; font-size: 22px; font-weight: 900; color: var(--border); transition: color 0.35s ease; }
-  .tile.active .tile-num { color: var(--primary); }
-  .tile-title { font-size: 16px; font-weight: 800; color: var(--headline); letter-spacing: -0.01em; line-height: 1.3; margin-bottom: 6px; }
-  .tile-gist { font-size: 12.5px; color: var(--muted); font-weight: 600; line-height: 1.4; }
+  .insight { height: 100%; background: var(--surface); border: 1px solid var(--border); border-radius: 20px; padding: 24px 26px; display: flex; flex-direction: column; opacity: 0; animation: scaleIn 0.7s ease 0.58s both; }
+  .insight-eyebrow { font-size: 13px; font-weight: 800; letter-spacing: 1.5px; text-transform: uppercase; color: var(--primary); margin-bottom: 12px; }
+  .insight-text { font-size: 17px; color: var(--body); line-height: 1.6; }
+  .insight-text .em { color: var(--headline); font-weight: 700; }
+  .ichips { display: flex; flex-direction: column; gap: 9px; margin-top: auto; padding-top: 18px; }
+  .ichip { display: inline-flex; align-items: center; gap: 9px; font-size: 15px; font-weight: 700; color: var(--primary); }
+  .ichip svg { width: 16px; height: 16px; stroke: var(--primary); fill: none; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; flex-shrink: 0; }
+
+  /* ─── FRAMEWORK ─── */
+  .fw-head { text-align: center; margin-bottom: 22px; opacity: 0; animation: fadeDown 0.8s ease 0.7s both; }
+  .fw-head .eyebrow { font-size: 13px; font-weight: 800; letter-spacing: 2px; text-transform: uppercase; color: var(--primary); }
+  .fw-head h2 { font-size: 27px; font-weight: 900; letter-spacing: -0.02em; color: var(--headline); margin: 8px 0 0; }
+
+  .status { position: relative; display: flex; flex-direction: column; gap: 10px; }
+  .status::before { content: ''; position: absolute; left: 27px; top: 30px; bottom: 30px; width: 3px; background: var(--border); border-radius: 3px; z-index: 0; }
+
+  .srow {
+    position: relative; z-index: 1; display: flex; align-items: center; gap: 20px;
+    background: var(--bg); border: 1px solid var(--border); border-radius: 16px;
+    padding: 14px 20px 14px 14px; cursor: pointer; outline: none;
+    transition: opacity 350ms cubic-bezier(0.4,0,0.2,1), transform 350ms cubic-bezier(0.4,0,0.2,1),
+                border-color 350ms ease, box-shadow 350ms ease, filter 350ms ease;
+    opacity: 0;
+  }
+  .srow.intro { animation: scaleIn 0.5s ease both; }
+  .srow.intro.r1 { animation-delay: 0.8s; }
+  .srow.intro.r2 { animation-delay: 0.88s; }
+  .srow.intro.r3 { animation-delay: 0.96s; }
+  .srow.intro.r4 { animation-delay: 1.04s; }
+  .srow.intro.r5 { animation-delay: 1.12s; }
+  .srow.intro.r6 { animation-delay: 1.2s; }
+
+  .status.has-active .srow:not(.active) { opacity: 0.5; filter: saturate(0.5) blur(1px); }
+  .srow.active { transform: translateX(3px); border-color: var(--primary); box-shadow: 0 14px 30px -14px var(--glow), 0 0 0 4px rgba(37,99,235,0.06); }
+
+  .letter {
+    flex-shrink: 0; width: 50px; height: 50px; border-radius: 13px;
+    background: var(--surface); border: 2px solid var(--border);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 25px; font-weight: 900; color: var(--muted); letter-spacing: -0.02em;
+    transition: all 0.35s cubic-bezier(0.25,0.8,0.25,1);
+  }
+  .srow.active .letter { background: var(--primary); border-color: var(--primary); color: #fff; transform: scale(1.08); box-shadow: 0 0 0 5px rgba(37,99,235,0.16); }
+
+  .scontent { flex: 1; min-width: 0; }
+  .sname { font-size: 18px; font-weight: 800; color: var(--headline); letter-spacing: -0.01em; transition: color 0.3s ease; }
+  .srow.active .sname { color: var(--primary); }
+  .sdesc { font-size: 15.5px; color: var(--body); line-height: 1.5; margin-top: 3px; }
+  .sdesc .mono { font-family: 'JetBrains Mono', monospace; font-size: 14.5px; color: var(--headline); }
+
+  .rag { display: inline-flex; align-items: center; gap: 6px; margin-left: 8px; vertical-align: middle; }
+  .rag i { width: 9px; height: 9px; border-radius: 50%; display: inline-block; }
+  .rag .r { background: var(--rose); } .rag .a { background: var(--amber); } .rag .g { background: var(--green); }
+
   .pin-dot { position: absolute; top: 13px; right: 13px; width: 8px; height: 8px; border-radius: 50%; background: var(--primary); box-shadow: 0 0 0 4px rgba(37,99,235,0.18); opacity: 0; transform: scale(0.4); transition: opacity 250ms ease, transform 250ms ease; }
-  .tile.pinned .pin-dot { opacity: 1; transform: scale(1); }
+  .srow.pinned .pin-dot { opacity: 1; transform: scale(1); }
 
-  /* ─── DETAIL: sentence-stacked, airy ─── */
-  .detail { background: var(--surface); border: 1px solid var(--border); border-radius: 18px; padding: 30px 36px; min-height: 168px; margin-bottom: 26px; opacity: 0; animation: fadeDown 0.8s ease 1.1s both; display: flex; flex-direction: column; }
-  .detail-label { display: inline-flex; align-items: center; gap: 9px; font-size: 11px; font-weight: 800; letter-spacing: 1px; text-transform: uppercase; color: var(--primary); margin-bottom: 16px; }
-  .detail-label .n { width: 19px; height: 19px; border-radius: 6px; background: var(--primary); color: #fff; font-size: 11px; display: flex; align-items: center; justify-content: center; }
-  .detail-text { max-width: 60ch; transition: opacity 0.35s ease, transform 0.35s ease; }
-  .detail-text p { margin: 0 0 12px; font-size: 15px; color: var(--body); line-height: 1.55; }
-  .detail-text p:last-child { margin-bottom: 0; }
-  .detail-text p.lead { font-size: 18px; font-weight: 600; color: var(--headline); line-height: 1.45; margin-bottom: 14px; }
-  .detail-text b { color: var(--headline); font-weight: 700; }
-  .detail.swapping .detail-text { opacity: 0; transform: translateY(8px); }
-
-  /* ─── CLOSING BAND ─── */
-  .band { position: relative; background: var(--bg); border: 1px solid var(--border); border-radius: 16px; padding: 20px 28px 20px 30px; overflow: hidden; opacity: 0; animation: fadeDown 0.8s ease 1.2s both; }
-  .band::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 6px; background: var(--green); }
-  .band-lead { display: flex; align-items: flex-start; gap: 12px; font-size: 15.5px; font-weight: 700; color: var(--headline); line-height: 1.45; }
-  .band-lead svg { width: 21px; height: 21px; stroke: var(--green); fill: none; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; flex-shrink: 0; margin-top: 1px; }
-  .band-caution { margin-top: 8px; padding-left: 33px; font-size: 13.5px; color: var(--rose); font-weight: 600; }
+  /* ─── MEMORY PROMPT ─── */
+  .memory {
+    display: flex; align-items: center; gap: 14px; margin-top: 26px;
+    background: var(--surface); border: 1px dashed var(--primary); border-radius: 16px; padding: 16px 22px;
+    opacity: 0; animation: fadeDown 0.8s ease 1.3s both;
+  }
+  .memory svg { width: 22px; height: 22px; stroke: var(--primary); fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; flex-shrink: 0; }
+  .memory-text { font-size: 16.5px; color: var(--headline); font-weight: 500; line-height: 1.5; }
+  .memory-text strong { font-weight: 800; }
 
   /* ─── KEYFRAMES ─── */
-  @keyframes fadeDown { from { opacity: 0; transform: translateY(-16px); } to { opacity: 1; transform: translateY(0); } }
-  @keyframes scaleIn  { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
-  @keyframes pulse    { 0%,100% { opacity: 1; } 50% { opacity: 0.5; } }
+  @keyframes fadeDown { from { opacity: 0; transform: translateY(-18px); } to { opacity: 1; transform: translateY(0); } }
+  @keyframes scaleIn  { from { opacity: 0; transform: scale(0.96); } to { opacity: 1; transform: scale(1); } }
 
   /* ─── RESPONSIVE ─── */
   @media (max-width: 860px) {
-    .headline { font-size: 32px; }
-    .tiles { flex-direction: column; }
-    .scene-lines, .detail-text { max-width: none; }
+    .headline { font-size: 33px; }
+    .setup { flex-direction: column; }
   }
   @media (max-width: 540px) {
-    body { padding: 36px 16px; }
-    .headline { font-size: 26px; }
-    .scene { padding: 24px 22px; }
-    .detail { padding: 24px 22px; }
-    .band-caution { padding-left: 0; }
+    body { padding: 40px 18px; }
+    .headline { font-size: 28px; }
+    .srow { gap: 14px; padding: 12px 14px; align-items: flex-start; }
+    .status::before { display: none; }
+    .memory { flex-direction: column; align-items: flex-start; }
   }
 
   @media (prefers-reduced-motion: reduce) {
@@ -189,7 +205,7 @@
   pointer-events: none;
 }
 .slide-nav .nav-label {
-  font-size: 13px;
+  font-size: 15px;
   font-weight: 500;
   color: #5f6368;
   background: rgba(255,255,255,0.9);
@@ -202,6 +218,7 @@
 
 </style>
 <style id="fit-css">
+@media (min-width:900px){body{padding-top:24px !important;padding-bottom:104px !important}}
 /* ===== SCREEN FIT ===== */
 html{overflow-x:hidden}
 body{overflow-x:hidden}
@@ -209,176 +226,129 @@ body{overflow-x:hidden}
   .tw-slide{padding-top:28px !important;padding-bottom:24px !important;min-height:0 !important}
 }
 </style>
+<style id="split-css">
+.deck{max-width:1200px}.head{margin:0 auto 14px}h2{font-size:34px}.fw-head{margin-bottom:20px}.memory{margin-top:20px}
+</style>
 </head>
 <body>
   <div class="deck">
 
-    <div class="toolbar">
-      <button class="pres-toggle" id="presBtn" aria-expanded="false" aria-controls="presenter">
-        <svg viewBox="0 0 24 24"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7z"></path><circle cx="12" cy="12" r="3"></circle></svg>
-        Presenter notes
-      </button>
+<div class="head">
+      <span class="label"><span class="dot"></span>Section 03 · Status reporting</span>
     </div>
 
-    <div class="presenter" id="presenter">
-      <div class="presenter-inner">
-        <span class="pres-eyebrow">For the facilitator — not shown to learners</span>
-        <div class="pres-grid">
-          <div class="pres-col">
-            <div class="pres-h">Placement</div>
-            <p class="pres-meta">Section 04 · within the 40-min Content block</p>
-            <div class="pres-h" style="margin-top:14px;">Land this</div>
-            <p>Early + honest beats resolve-it-quietly. The work was fine; the trust was lost.</p>
-          </div>
-          <div class="pres-col">
-            <div class="pres-h">Talk track</div>
-            <p class="quote">"Managing expectations is the most consequential communication skill an FDE has, and the one most commonly avoided."</p>
-            <p class="quote">"The one who waits until they're certain keeps creating situations like Tuesday."</p>
-          </div>
-          <div class="pres-col">
-            <div class="pres-h">Delivery cue</div>
-            <p>Walk the Tuesday story slowly — let the room feel the gap between good work and lost trust. Then introduce the 3 rules as the fix.</p>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="head">
-      <span class="label"><span class="dot"></span>Section 04 · Managing expectations</span>
-      <h1 class="headline">The discipline of early and honest</h1>
-      <p class="thesis">Raise risks <b>early</b>, bring <b>options</b>, and <b>reset out loud</b>.</p>
-    </div>
-
-    <div class="scene">
-      <div class="scene-top">
-        <span class="scene-tag"><span class="live"></span>Scene · Week 5 of 8 — Retail AI project</span>
-        <span class="scene-distill">Right fix. Too late.</span>
-      </div>
-      <div class="scene-lines">
-        <p>An FDE notices on <span class="day">Monday</span> that a third-party API the recommendation engine depends on has changed its rate limits. It's fixable, but it will take 4 to 5 days.</p>
-        <p class="scene-think">"Let me see if I can find a workaround first. No point alarming the client if I can solve it quietly."</p>
-        <p>By <span class="day">Wednesday</span>, no workaround exists. They tell the client — who had a stakeholder presentation on <span class="day">Tuesday</span> where they <b>told leadership the project was on track</b>.</p>
-        <p>The client isn't angry about the API change. <span class="scene-punch">They're angry about Tuesday.</span></p>
-      </div>
-    </div>
-
-    <div class="rules-head">
+    <div class="fw-head">
       <div class="eyebrow">The framework</div>
-      <h2>The 3 rules of expectation management</h2>
+      <h2>The STATUS framework</h2>
     </div>
 
-    <div class="tiles has-active" id="tiles" role="list">
-      <div class="tile intro t1" role="listitem button" tabindex="0" aria-pressed="false" data-label="Early is always better than certain" data-body="&lt;p class='lead'&gt;Don't wait until you're sure before raising a risk.&lt;/p&gt;&lt;p&gt;&lt;b&gt;Raise it when you first see the signal&lt;/b&gt;, framed as a heads-up.&lt;/p&gt;&lt;p&gt;An early flag is valued far more than a late apology.&lt;/p&gt;">
+    <div class="status has-active" id="status" role="list">
+
+      <div class="srow intro r1" role="listitem button" tabindex="0" aria-pressed="false">
         <span class="pin-dot" aria-hidden="true"></span>
-        <div class="tile-top">
-          <div class="tile-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg></div>
-          <span class="tile-num">01</span>
+        <div class="letter">S</div>
+        <div class="scontent">
+          <div class="sname">Summary</div>
+          <div class="sdesc">One or two sentences: what is the overall state of the engagement right now? This goes first, always, even if the news is mixed.</div>
         </div>
-        <div class="tile-title">Early is always better than certain.</div>
-        <div class="tile-gist">Flag the signal, not the certainty.</div>
       </div>
 
-      <div class="tile intro t2 active" role="listitem button" tabindex="0" aria-pressed="false" data-label="Come with options, not just problems" data-body="&lt;p class='lead'&gt;Raising a risk without a proposed path forward puts the entire burden on the client.&lt;/p&gt;&lt;p&gt;&lt;b&gt;&quot;Here's the situation, here are two ways we can respond, and here's what I recommend&quot; is leadership.&lt;/b&gt;&lt;/p&gt;&lt;p&gt;&quot;We have a problem&quot; is not.&lt;/p&gt;">
+      <div class="srow intro r2" role="listitem button" tabindex="0" aria-pressed="false">
         <span class="pin-dot" aria-hidden="true"></span>
-        <div class="tile-top">
-          <div class="tile-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><line x1="6" y1="3" x2="6" y2="15"></line><circle cx="18" cy="6" r="3"></circle><circle cx="6" cy="18" r="3"></circle><path d="M18 9a9 9 0 0 1-9 9"></path></svg></div>
-          <span class="tile-num">02</span>
+        <div class="letter">T</div>
+        <div class="scontent">
+          <div class="sname">This week</div>
+          <div class="sdesc">What was completed since the last update? Be specific. <span class="mono">"Retrieval layer complete; all benchmark tests passing,"</span> not "worked on the pipeline."</div>
         </div>
-        <div class="tile-title">Come with options, not just problems.</div>
-        <div class="tile-gist">Bring the path, not just the problem.</div>
       </div>
 
-      <div class="tile intro t3" role="listitem button" tabindex="0" aria-pressed="false" data-label="Reset explicitly" data-body="&lt;p class='lead'&gt;When a timeline shifts or a scope changes, &lt;b&gt;say so directly&lt;/b&gt;.&lt;/p&gt;&lt;p&gt;Don't let a new reality appear quietly in a status update and hope the client absorbs it.&lt;/p&gt;&lt;p&gt;An explicit reset is more respectful and more effective.&lt;/p&gt;">
+      <div class="srow intro r3" role="listitem button" tabindex="0" aria-pressed="false">
         <span class="pin-dot" aria-hidden="true"></span>
-        <div class="tile-top">
-          <div class="tile-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><polyline points="23 4 23 10 17 10"></polyline><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path></svg></div>
-          <span class="tile-num">03</span>
+        <div class="letter">A</div>
+        <div class="scontent">
+          <div class="sname">Ahead / next week</div>
+          <div class="sdesc">What is planned for the coming period? Flag anything the client needs to be aware of or prepare for.</div>
         </div>
-        <div class="tile-title">Reset explicitly.</div>
-        <div class="tile-gist">Say the change out loud.</div>
       </div>
+
+      <div class="srow intro r4 active" role="listitem button" tabindex="0" aria-pressed="false">
+        <span class="pin-dot" aria-hidden="true"></span>
+        <div class="letter">T</div>
+        <div class="scontent">
+          <div class="sname">Tensions / risks</div>
+          <div class="sdesc">What are current blockers, risks, or open questions? Name the risk here. Don't bury it in the summary or soften it with "minor."</div>
+        </div>
+      </div>
+
+      <div class="srow intro r5" role="listitem button" tabindex="0" aria-pressed="false">
+        <span class="pin-dot" aria-hidden="true"></span>
+        <div class="letter">U</div>
+        <div class="scontent">
+          <div class="sname">Unresolved items</div>
+          <div class="sdesc">What decisions or inputs are needed from the client? Be explicit about what's waiting on them and by when.</div>
+        </div>
+      </div>
+
+      <div class="srow intro r6" role="listitem button" tabindex="0" aria-pressed="false">
+        <span class="pin-dot" aria-hidden="true"></span>
+        <div class="letter">S</div>
+        <div class="scontent">
+          <div class="sname">Score <span class="rag" aria-hidden="true"><i class="r"></i><i class="a"></i><i class="g"></i></span></div>
+          <div class="sdesc">A RAG (Red / Amber / Green) for timeline, scope, and quality. Gives the client an instant read without requiring them to interpret the update.</div>
+        </div>
+      </div>
+
     </div>
 
-    <div class="detail" id="detail">
-      <span class="detail-label"><span class="n" id="detail-n">2</span><span id="detail-name">Come with options, not just problems</span></span>
-      <div class="detail-text" id="detail-text"><p class="lead">Raising a risk without a proposed path forward puts the entire burden on the client.</p><p><b>"Here's the situation, here are two ways we can respond, and here's what I recommend" is leadership.</b></p><p>"We have a problem" is not.</p></div>
+    <div class="memory">
+      <svg viewBox="0 0 24 24"><path d="M9.5 2A2.5 2.5 0 0 1 12 4.5v15a2.5 2.5 0 0 0-2.5-2.5H4a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1z"></path><path d="M14.5 2A2.5 2.5 0 0 0 12 4.5v15a2.5 2.5 0 0 1 2.5-2.5H20a1 1 0 0 0 1-1V4a1 1 0 0 0-1-1z"></path></svg>
+      <div class="memory-text">The mnemonic is intentional — <strong>close the deck and write out what each letter stands for, from memory.</strong></div>
     </div>
 
-    <div class="band">
-      <div class="band-lead">
-        <svg viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-        The FDE who surfaces issues early, frames them constructively, and comes with options is the one clients trust and renew.
-      </div>
-      <div class="band-caution">The one who waits until they're certain keeps creating situations like Tuesday.</div>
-    </div>
+  
 
   </div>
 
 <script>
   (function () {
-    const wrap = document.getElementById('tiles');
-    const tiles = Array.from(wrap.querySelectorAll('.tile'));
-    const detail = document.getElementById('detail');
-    const dName = document.getElementById('detail-name');
-    const dNum = document.getElementById('detail-n');
-    const dText = document.getElementById('detail-text');
+    const wrap = document.getElementById('status');
+    const items = Array.from(wrap.querySelectorAll('.srow'));
     const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
     let idx = 0, pinned = false;
     let cycleTimer = null, resumeTimer = null, resetTimer = null;
 
-    function paint(t, n) {
-      detail.classList.add('swapping');
-      setTimeout(() => {
-        dNum.textContent = n + 1;
-        dName.textContent = t.dataset.label;
-        dText.innerHTML = t.dataset.body;
-        detail.classList.remove('swapping');
-      }, 180);
-    }
     function setActive(i) {
       idx = i;
       wrap.classList.add('has-active');
-      tiles.forEach((t, j) => {
+      items.forEach((it, j) => {
         const on = j === i;
-        t.classList.toggle('active', on);
-        t.setAttribute('aria-pressed', (on && pinned) ? 'true' : 'false');
+        it.classList.toggle('active', on);
+        it.setAttribute('aria-pressed', (on && pinned) ? 'true' : 'false');
       });
-      paint(tiles[i], i);
     }
-    function startCycle() { if (reduceMotion || pinned) return; stopCycle(); cycleTimer = setInterval(() => setActive((idx + 1) % tiles.length), 3200); }
+    function startCycle() { if (reduceMotion || pinned) return; stopCycle(); cycleTimer = setInterval(() => setActive((idx + 1) % items.length), 3000); }
     function stopCycle() { clearInterval(cycleTimer); cycleTimer = null; }
     function pauseForUser() { stopCycle(); clearTimeout(resumeTimer); }
     function scheduleResume() { if (pinned) return; clearTimeout(resumeTimer); resumeTimer = setTimeout(startCycle, 5000); }
 
-    tiles.forEach((t, i) => {
+    items.forEach((it, i) => {
       const focusIn = () => { if (pinned) return; clearTimeout(resetTimer); pauseForUser(); setActive(i); };
       const focusOut = () => { if (pinned) return; resetTimer = setTimeout(scheduleResume, 150); };
-      t.addEventListener('mouseenter', focusIn);
-      t.addEventListener('focus', focusIn);
-      t.addEventListener('mouseleave', focusOut);
-      t.addEventListener('blur', focusOut);
+      it.addEventListener('mouseenter', focusIn);
+      it.addEventListener('focus', focusIn);
+      it.addEventListener('mouseleave', focusOut);
+      it.addEventListener('blur', focusOut);
       const toggle = () => {
-        if (pinned && t.classList.contains('active')) { pinned = false; t.classList.remove('pinned'); setActive(i); scheduleResume(); }
-        else { pinned = true; stopCycle(); clearTimeout(resumeTimer); tiles.forEach(x => x.classList.remove('pinned')); t.classList.add('pinned'); setActive(i); }
+        if (pinned && it.classList.contains('active')) { pinned = false; it.classList.remove('pinned'); setActive(i); scheduleResume(); }
+        else { pinned = true; stopCycle(); clearTimeout(resumeTimer); items.forEach(x => x.classList.remove('pinned')); it.classList.add('pinned'); setActive(i); }
       };
-      t.addEventListener('click', toggle);
-      t.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggle(); } });
+      it.addEventListener('click', toggle);
+      it.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggle(); } });
     });
 
     setActive(0);
     if (!reduceMotion) setTimeout(startCycle, 3200);
-
-    const btn = document.getElementById('presBtn');
-    const panel = document.getElementById('presenter');
-    let open = false;
-    btn.addEventListener('click', () => {
-      open = !open;
-      btn.classList.toggle('on', open);
-      btn.setAttribute('aria-expanded', open ? 'true' : 'false');
-      if (open) { panel.style.display = 'block'; requestAnimationFrame(() => panel.classList.add('show')); }
-      else { panel.classList.remove('show'); setTimeout(() => { if (!open) panel.style.display = 'none'; }, 320); }
-    });
   })();
 </script>
 
@@ -388,10 +358,9 @@ body{overflow-x:hidden}
 <div class="fit-spacer" style="height:96px" aria-hidden="true"></div>
 <div class="slide-nav">
   <a href="slide-09.html" class="nav-btn" title="Previous"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"></polyline></svg></a>
-  <span class="nav-label">10 / 14</span>
+  <span class="nav-label">10 / 17</span>
   <a href="slide-11.html" class="nav-btn" title="Next"><svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"></polyline></svg></a>
 </div>
-
 <script id="fit-js">
 (function(){
   var t=null,kids=document.body.children;
@@ -402,7 +371,7 @@ body{overflow-x:hidden}
   function fit(){
     t.style.zoom=1;
     if(window.innerWidth<900)return;
-    var h=t.getBoundingClientRect().height,avail=window.innerHeight-118;
+    var h=t.getBoundingClientRect().height,avail=window.innerHeight-parseFloat(getComputedStyle(document.body).paddingTop)-parseFloat(getComputedStyle(document.body).paddingBottom);
     if(h<=avail)return;
     t.style.zoom=Math.max(0.72,avail/h);
   }

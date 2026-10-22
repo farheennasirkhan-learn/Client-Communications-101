@@ -235,6 +235,7 @@
 
 </style>
 <style id="fit-css">
+@media (min-width:900px){body{padding-top:24px !important;padding-bottom:104px !important}}
 /* ===== SCREEN FIT ===== */
 html{overflow-x:hidden}
 body{overflow-x:hidden}
@@ -408,10 +409,9 @@ body{overflow-x:hidden}
 <div class="fit-spacer" style="height:96px" aria-hidden="true"></div>
 <div class="slide-nav">
   <a href="slide-01.html" class="nav-btn" title="Previous"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"></polyline></svg></a>
-  <span class="nav-label">2 / 14</span>
+  <span class="nav-label">2 / 17</span>
   <a href="slide-03.html" class="nav-btn" title="Next"><svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"></polyline></svg></a>
 </div>
-
 <script id="fit-js">
 (function(){
   var t=null,kids=document.body.children;
@@ -422,7 +422,7 @@ body{overflow-x:hidden}
   function fit(){
     t.style.zoom=1;
     if(window.innerWidth<900)return;
-    var h=t.getBoundingClientRect().height,avail=window.innerHeight-118;
+    var h=t.getBoundingClientRect().height,avail=window.innerHeight-parseFloat(getComputedStyle(document.body).paddingTop)-parseFloat(getComputedStyle(document.body).paddingBottom);
     if(h<=avail)return;
     t.style.zoom=Math.max(0.72,avail/h);
   }

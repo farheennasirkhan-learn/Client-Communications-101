@@ -1,7 +1,7 @@
 <html lang="en"><head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Email Etiquette: Precision Over Politeness</title>
+<title>Email Etiquette: Precision Over Politeness (Part 1)</title>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500&display=swap');
 
@@ -40,13 +40,13 @@
   .head { max-width: 760px; margin: 0 auto 38px; text-align: center; }
   .label {
     display: inline-flex; align-items: center; gap: 10px;
-    font-size: 11px; font-weight: 800; letter-spacing: 2px;
+    font-size: 13px; font-weight: 800; letter-spacing: 2px;
     text-transform: uppercase; color: var(--primary); margin-bottom: 16px;
     opacity: 0; animation: fadeDown 0.8s ease 0.1s both;
   }
   .label .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--primary); }
   .headline {
-    font-size: 42px; font-weight: 900; letter-spacing: -0.03em;
+    font-size: 43px; font-weight: 900; letter-spacing: -0.03em;
     line-height: 1.1; color: var(--headline); margin: 0;
     opacity: 0; animation: fadeDown 0.8s ease 0.25s both;
   }
@@ -64,16 +64,16 @@
   .mail-bar { display: flex; align-items: center; gap: 8px; padding: 12px 16px; background: var(--surface); border-bottom: 1px solid var(--border); }
   .mail-bar .lt { width: 10px; height: 10px; border-radius: 50%; }
   .mail-bar .r { background: #f87171; } .mail-bar .y { background: #fbbf24; } .mail-bar .g { background: #34d399; }
-  .mail-meta { margin-left: 8px; font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--muted); }
+  .mail-meta { margin-left: 8px; font-family: 'JetBrains Mono', monospace; font-size: 13px; color: var(--muted); }
   .mail-inner { padding: 20px 22px; flex: 1; }
-  .mail-from { font-size: 12px; color: var(--muted); margin-bottom: 12px; }
+  .mail-from { font-size: 14px; color: var(--muted); margin-bottom: 12px; }
   .mail-from b { color: var(--headline); font-weight: 700; }
   .mail-quote {
-    font-size: 14px; color: var(--body); line-height: 1.65; font-style: italic;
+    font-size: 16px; color: var(--body); line-height: 1.65; font-style: italic;
     padding: 14px 16px; background: var(--surface); border-left: 3px solid #cbd5e1; border-radius: 0 10px 10px 0;
   }
-  .mail-out { margin-top: 16px; font-size: 13.5px; color: var(--body); line-height: 1.6; }
-  .blocked { display: inline-flex; align-items: center; gap: 7px; margin-top: 12px; font-size: 13px; font-weight: 800; color: var(--rose); background: var(--rose-soft); border: 1px solid rgba(225,29,72,0.2); border-radius: 999px; padding: 6px 13px; }
+  .mail-out { margin-top: 16px; font-size: 15.5px; color: var(--body); line-height: 1.6; }
+  .blocked { display: inline-flex; align-items: center; gap: 7px; margin-top: 12px; font-size: 15px; font-weight: 800; color: var(--rose); background: var(--rose-soft); border: 1px solid rgba(225,29,72,0.2); border-radius: 999px; padding: 6px 13px; }
   .blocked svg { width: 14px; height: 14px; stroke: var(--rose); fill: none; stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; }
 
   .insight {
@@ -81,20 +81,20 @@
     border-radius: 20px; padding: 26px 28px; display: flex; flex-direction: column;
     opacity: 0; animation: scaleIn 0.7s ease 0.58s both;
   }
-  .insight-eyebrow { font-size: 11px; font-weight: 800; letter-spacing: 1.5px; text-transform: uppercase; color: var(--primary); margin-bottom: 12px; }
-  .insight-text { font-size: 15.5px; color: var(--body); line-height: 1.62; }
+  .insight-eyebrow { font-size: 13px; font-weight: 800; letter-spacing: 1.5px; text-transform: uppercase; color: var(--primary); margin-bottom: 12px; }
+  .insight-text { font-size: 17.5px; color: var(--body); line-height: 1.62; }
   .insight-text .em { color: var(--headline); font-weight: 700; }
   .contrast { display: flex; flex-direction: column; gap: 10px; margin-top: auto; padding-top: 20px; }
-  .crow { display: flex; align-items: center; gap: 12px; font-size: 13.5px; font-weight: 600; }
-  .ctag { font-size: 11px; font-weight: 800; letter-spacing: 0.5px; text-transform: uppercase; border-radius: 7px; padding: 5px 10px; white-space: nowrap; }
+  .crow { display: flex; align-items: center; gap: 12px; font-size: 15.5px; font-weight: 600; }
+  .ctag { font-size: 13px; font-weight: 800; letter-spacing: 0.5px; text-transform: uppercase; border-radius: 7px; padding: 5px 10px; white-space: nowrap; }
   .ctag.bad { color: var(--rose); background: var(--rose-soft); }
   .ctag.good { color: var(--primary); background: rgba(37,99,235,0.1); }
   .crow .arrow { color: var(--muted); }
 
   /* ─── PRINCIPLES ─── */
   .p-head { text-align: center; margin-bottom: 24px; opacity: 0; animation: fadeDown 0.8s ease 0.7s both; }
-  .p-head .eyebrow { font-size: 11px; font-weight: 800; letter-spacing: 2px; text-transform: uppercase; color: var(--primary); }
-  .p-head h2 { font-size: 26px; font-weight: 900; letter-spacing: -0.02em; color: var(--headline); margin: 8px 0 0; }
+  .p-head .eyebrow { font-size: 13px; font-weight: 800; letter-spacing: 2px; text-transform: uppercase; color: var(--primary); }
+  .p-head h2 { font-size: 27px; font-weight: 900; letter-spacing: -0.02em; color: var(--headline); margin: 8px 0 0; }
 
   .principles { display: flex; flex-wrap: wrap; gap: 18px; justify-content: center; align-items: stretch; }
   .principle {
@@ -124,10 +124,10 @@
   .p-icon svg { width: 21px; height: 21px; stroke: var(--primary); fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; transition: stroke 0.35s ease; }
   .principle.active .p-icon { background: var(--primary); }
   .principle.active .p-icon svg { stroke: #fff; }
-  .p-num { font-size: 26px; font-weight: 900; letter-spacing: -0.03em; color: var(--border); transition: color 0.35s ease; }
+  .p-num { font-size: 27px; font-weight: 900; letter-spacing: -0.03em; color: var(--border); transition: color 0.35s ease; }
   .principle.active .p-num { color: var(--primary); }
-  .p-title { font-size: 17px; font-weight: 800; color: var(--headline); margin-bottom: 9px; letter-spacing: -0.01em; }
-  .p-body { font-size: 13.5px; color: var(--body); line-height: 1.55; }
+  .p-title { font-size: 19px; font-weight: 800; color: var(--headline); margin-bottom: 9px; letter-spacing: -0.01em; }
+  .p-body { font-size: 15.5px; color: var(--body); line-height: 1.55; }
 
   .pin-dot { position: absolute; top: 13px; right: 13px; width: 8px; height: 8px; border-radius: 50%; background: var(--primary); box-shadow: 0 0 0 4px rgba(37,99,235,0.18); opacity: 0; transform: scale(0.4); transition: opacity 250ms ease, transform 250ms ease; }
   .principle.pinned .pin-dot { opacity: 1; transform: scale(1); }
@@ -138,13 +138,13 @@
 
   /* ─── RESPONSIVE ─── */
   @media (max-width: 860px) {
-    .headline { font-size: 33px; }
+    .headline { font-size: 34px; }
     .setup { flex-direction: column; }
     .principle { flex: 0 1 100%; }
   }
   @media (max-width: 540px) {
     body { padding: 40px 18px; }
-    .headline { font-size: 28px; }
+    .headline { font-size: 29px; }
   }
 
   @media (prefers-reduced-motion: reduce) {
@@ -198,7 +198,7 @@
   pointer-events: none;
 }
 .slide-nav .nav-label {
-  font-size: 13px;
+  font-size: 15px;
   font-weight: 500;
   color: #5f6368;
   background: rgba(255,255,255,0.9);
@@ -211,6 +211,7 @@
 
 </style>
 <style id="fit-css">
+@media (min-width:900px){body{padding-top:24px !important;padding-bottom:104px !important}}
 /* ===== SCREEN FIT ===== */
 html{overflow-x:hidden}
 body{overflow-x:hidden}
@@ -222,7 +223,7 @@ body{overflow-x:hidden}
 <body>
   <div class="deck">
 
-    <div class="head">
+<div class="head">
       <span class="label"><span class="dot"></span>Section 02 · Email etiquette</span>
       <h1 class="headline">Precision over politeness</h1>
     </div>
@@ -252,109 +253,11 @@ body{overflow-x:hidden}
       </div>
     </div>
 
-    <div class="p-head">
-      <div class="eyebrow">The framework</div>
-      <h2>The 5 principles of FDE email</h2>
-    </div>
-
-    <div class="principles has-active" id="principles" role="list">
-
-      <div class="principle intro p1" role="listitem button" tabindex="0" aria-pressed="false">
-        <span class="pin-dot" aria-hidden="true"></span>
-        <div class="p-top">
-          <div class="p-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg></div>
-          <span class="p-num">01</span>
-        </div>
-        <div class="p-title">Lead with the point.</div>
-        <div class="p-body">State the purpose of the email in the first line. Clients are busy. They shouldn't need to read three paragraphs to understand what you're asking for or telling them.</div>
-      </div>
-
-      <div class="principle intro p2 active" role="listitem button" tabindex="0" aria-pressed="false">
-        <span class="pin-dot" aria-hidden="true"></span>
-        <div class="p-top">
-          <div class="p-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M9 11l3 3L22 4"></path><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path></svg></div>
-          <span class="p-num">02</span>
-        </div>
-        <div class="p-title">One email, one ask.</div>
-        <div class="p-body">If you need a decision, a review, and a confirmation, send three emails, or structure one very clearly with numbered items. Bundling multiple asks reduces the chance of resolving any of them.</div>
-      </div>
-
-      <div class="principle intro p3" role="listitem button" tabindex="0" aria-pressed="false">
-        <span class="pin-dot" aria-hidden="true"></span>
-        <div class="p-top">
-          <div class="p-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><polyline points="4 14 10 14 10 20"></polyline><polyline points="20 10 14 10 14 4"></polyline><line x1="14" y1="10" x2="21" y2="3"></line><line x1="3" y1="21" x2="10" y2="14"></line></svg></div>
-          <span class="p-num">03</span>
-        </div>
-        <div class="p-title">Precision over length.</div>
-        <div class="p-body">Short and clear beats long and comprehensive. If context is needed, use structure.</div>
-      </div>
-
-      <div class="principle intro p4" role="listitem button" tabindex="0" aria-pressed="false">
-        <span class="pin-dot" aria-hidden="true"></span>
-        <div class="p-top">
-          <div class="p-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><line x1="4" y1="21" x2="4" y2="14"></line><line x1="4" y1="10" x2="4" y2="3"></line><line x1="12" y1="21" x2="12" y2="12"></line><line x1="12" y1="8" x2="12" y2="3"></line><line x1="20" y1="21" x2="20" y2="16"></line><line x1="20" y1="12" x2="20" y2="3"></line><line x1="1" y1="14" x2="7" y2="14"></line><line x1="9" y1="8" x2="15" y2="8"></line><line x1="17" y1="16" x2="23" y2="16"></line></svg></div>
-          <span class="p-num">04</span>
-        </div>
-        <div class="p-title">Tone matches the moment.</div>
-        <div class="p-body">Professional warmth is the default. A kickoff email reads differently from a delay notification, which reads differently from a scope conversation. Matching tone to context is a sign of emotional intelligence.</div>
-      </div>
-
-      <div class="principle intro p5" role="listitem button" tabindex="0" aria-pressed="false">
-        <span class="pin-dot" aria-hidden="true"></span>
-        <div class="p-top">
-          <div class="p-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 21V5a2 2 0 0 1 2-2h9l-1 4 1 4H6"></path></svg></div>
-          <span class="p-num">05</span>
-        </div>
-        <div class="p-title">Always define the next step.</div>
-        <div class="p-body">Every email should end with clarity on what happens next: who does what, by when. If there's no next step, the email probably isn't ready to send.</div>
-      </div>
-
-    </div>
+    
 
   </div>
 
-<script>
-  (function () {
-    const wrap = document.getElementById('principles');
-    const items = Array.from(wrap.querySelectorAll('.principle'));
-    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-    let idx = 0, pinned = false;
-    let cycleTimer = null, resumeTimer = null, resetTimer = null;
-
-    function setActive(i) {
-      idx = i;
-      wrap.classList.add('has-active');
-      items.forEach((it, j) => {
-        const on = j === i;
-        it.classList.toggle('active', on);
-        it.setAttribute('aria-pressed', (on && pinned) ? 'true' : 'false');
-      });
-    }
-    function startCycle() { if (reduceMotion || pinned) return; stopCycle(); cycleTimer = setInterval(() => setActive((idx + 1) % items.length), 3000); }
-    function stopCycle() { clearInterval(cycleTimer); cycleTimer = null; }
-    function pauseForUser() { stopCycle(); clearTimeout(resumeTimer); }
-    function scheduleResume() { if (pinned) return; clearTimeout(resumeTimer); resumeTimer = setTimeout(startCycle, 5000); }
-
-    items.forEach((it, i) => {
-      const focusIn = () => { if (pinned) return; clearTimeout(resetTimer); pauseForUser(); setActive(i); };
-      const focusOut = () => { if (pinned) return; resetTimer = setTimeout(scheduleResume, 150); };
-      it.addEventListener('mouseenter', focusIn);
-      it.addEventListener('focus', focusIn);
-      it.addEventListener('mouseleave', focusOut);
-      it.addEventListener('blur', focusOut);
-      const toggle = () => {
-        if (pinned && it.classList.contains('active')) { pinned = false; it.classList.remove('pinned'); setActive(i); scheduleResume(); }
-        else { pinned = true; stopCycle(); clearTimeout(resumeTimer); items.forEach(x => x.classList.remove('pinned')); it.classList.add('pinned'); setActive(i); }
-      };
-      it.addEventListener('click', toggle);
-      it.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggle(); } });
-    });
-
-    setActive(0);
-    if (!reduceMotion) setTimeout(startCycle, 3200);
-  })();
-</script>
 
 
 
@@ -362,10 +265,9 @@ body{overflow-x:hidden}
 <div class="fit-spacer" style="height:96px" aria-hidden="true"></div>
 <div class="slide-nav">
   <a href="slide-05.html" class="nav-btn" title="Previous"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"></polyline></svg></a>
-  <span class="nav-label">6 / 14</span>
+  <span class="nav-label">6 / 17</span>
   <a href="slide-07.html" class="nav-btn" title="Next"><svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"></polyline></svg></a>
 </div>
-
 <script id="fit-js">
 (function(){
   var t=null,kids=document.body.children;
@@ -376,7 +278,7 @@ body{overflow-x:hidden}
   function fit(){
     t.style.zoom=1;
     if(window.innerWidth<900)return;
-    var h=t.getBoundingClientRect().height,avail=window.innerHeight-118;
+    var h=t.getBoundingClientRect().height,avail=window.innerHeight-parseFloat(getComputedStyle(document.body).paddingTop)-parseFloat(getComputedStyle(document.body).paddingBottom);
     if(h<=avail)return;
     t.style.zoom=Math.max(0.72,avail/h);
   }

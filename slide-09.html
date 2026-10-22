@@ -1,21 +1,17 @@
 <html lang="en"><head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>STATUS in Action — Week 6 Update</title>
+<title>Status Reporting — The STATUS Framework (Part 1)</title>
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;600&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500&display=swap');
 
   :root {
     --primary: #2563eb;
     --glow: rgba(37, 99, 235, 0.15);
     --rose: #e11d48;
     --rose-soft: rgba(225,29,72,0.10);
-    --rose-glow: rgba(225,29,72,0.16);
-    --green: #16a34a;
-    --green-soft: rgba(22,163,74,0.10);
-    --green-glow: rgba(22,163,74,0.16);
     --amber: #f59e0b;
-    --amber-soft: rgba(245,158,11,0.12);
+    --green: #16a34a;
     --bg: #ffffff;
     --surface: #f8fafc;
     --border: #e2e8f0;
@@ -42,109 +38,120 @@
   .deck { width: 100%; max-width: 1080px; }
 
   /* ─── HEADER ─── */
-  .head { max-width: 800px; margin: 0 auto 34px; text-align: center; }
+  .head { max-width: 760px; margin: 0 auto 34px; text-align: center; }
   .label {
     display: inline-flex; align-items: center; gap: 10px;
-    font-size: 11px; font-weight: 800; letter-spacing: 2px;
+    font-size: 13px; font-weight: 800; letter-spacing: 2px;
     text-transform: uppercase; color: var(--primary); margin-bottom: 16px;
     opacity: 0; animation: fadeDown 0.8s ease 0.1s both;
   }
   .label .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--primary); }
   .headline {
-    font-size: 40px; font-weight: 900; letter-spacing: -0.03em;
-    line-height: 1.1; color: var(--headline); margin: 0 0 14px;
+    font-size: 41px; font-weight: 900; letter-spacing: -0.03em;
+    line-height: 1.1; color: var(--headline); margin: 0;
     opacity: 0; animation: fadeDown 0.8s ease 0.25s both;
   }
-  .ctx {
-    display: inline-flex; align-items: center; gap: 10px;
-    font-size: 14px; color: var(--body); background: var(--surface);
-    border: 1px solid var(--border); border-radius: 999px; padding: 8px 16px;
-    opacity: 0; animation: fadeDown 0.8s ease 0.4s both;
-  }
-  .ctx svg { width: 15px; height: 15px; stroke: var(--amber); fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
-  .ctx b { color: var(--headline); font-weight: 700; }
 
-  /* ─── COMPARE ─── */
-  .compare { display: flex; gap: 22px; align-items: stretch; margin-bottom: 26px; }
+  /* ─── SETUP ─── */
+  .setup { display: flex; gap: 24px; align-items: stretch; margin-bottom: 38px; }
+  .col-scene { flex: 1.15; }
+  .col-insight { flex: 1; }
 
-  .mailcard {
-    position: relative; flex: 1 1 0; min-width: 0;
-    --accent: var(--rose); --accent-soft: var(--rose-soft); --accent-glow: var(--rose-glow);
-    background: var(--bg); border: 1px solid var(--border); border-radius: 20px;
-    overflow: hidden; cursor: pointer; outline: none; display: flex; flex-direction: column;
+  .scene { height: 100%; background: var(--bg); border: 1px solid var(--border); border-radius: 20px; overflow: hidden; display: flex; flex-direction: column; opacity: 0; animation: scaleIn 0.7s ease 0.45s both; }
+  .scene-bar { display: flex; align-items: center; gap: 9px; padding: 13px 18px; background: var(--surface); border-bottom: 1px solid var(--border); font-family: 'JetBrains Mono', monospace; font-size: 13px; color: var(--muted); }
+  .scene-bar .live { width: 7px; height: 7px; border-radius: 50%; background: var(--amber); }
+  .scene-inner { padding: 18px 20px 20px; }
+  .scene-from { font-size: 14px; color: var(--muted); margin-bottom: 12px; }
+  .scene-from b { color: var(--headline); font-weight: 700; }
+  .scene-quote { font-size: 15.5px; color: var(--body); line-height: 1.65; font-style: italic; padding: 13px 15px; background: var(--surface); border-left: 3px solid #cbd5e1; border-radius: 0 10px 10px 0; }
+  .vague { color: var(--rose); border-bottom: 1px dotted rgba(225,29,72,0.55); font-style: italic; }
+  .scene-react { margin-top: 14px; font-size: 15px; color: var(--body); line-height: 1.6; }
+  .scene-react .note { color: var(--headline); font-weight: 700; }
+  .trust { display: inline-flex; align-items: center; gap: 7px; margin-top: 11px; font-size: 14.5px; font-weight: 800; color: var(--rose); background: var(--rose-soft); border: 1px solid rgba(225,29,72,0.2); border-radius: 999px; padding: 6px 12px; }
+  .trust svg { width: 14px; height: 14px; stroke: var(--rose); fill: none; stroke-width: 2.3; stroke-linecap: round; stroke-linejoin: round; }
+
+  .insight { height: 100%; background: var(--surface); border: 1px solid var(--border); border-radius: 20px; padding: 24px 26px; display: flex; flex-direction: column; opacity: 0; animation: scaleIn 0.7s ease 0.58s both; }
+  .insight-eyebrow { font-size: 13px; font-weight: 800; letter-spacing: 1.5px; text-transform: uppercase; color: var(--primary); margin-bottom: 12px; }
+  .insight-text { font-size: 17px; color: var(--body); line-height: 1.6; }
+  .insight-text .em { color: var(--headline); font-weight: 700; }
+  .ichips { display: flex; flex-direction: column; gap: 9px; margin-top: auto; padding-top: 18px; }
+  .ichip { display: inline-flex; align-items: center; gap: 9px; font-size: 15px; font-weight: 700; color: var(--primary); }
+  .ichip svg { width: 16px; height: 16px; stroke: var(--primary); fill: none; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; flex-shrink: 0; }
+
+  /* ─── FRAMEWORK ─── */
+  .fw-head { text-align: center; margin-bottom: 22px; opacity: 0; animation: fadeDown 0.8s ease 0.7s both; }
+  .fw-head .eyebrow { font-size: 13px; font-weight: 800; letter-spacing: 2px; text-transform: uppercase; color: var(--primary); }
+  .fw-head h2 { font-size: 27px; font-weight: 900; letter-spacing: -0.02em; color: var(--headline); margin: 8px 0 0; }
+
+  .status { position: relative; display: flex; flex-direction: column; gap: 10px; }
+  .status::before { content: ''; position: absolute; left: 27px; top: 30px; bottom: 30px; width: 3px; background: var(--border); border-radius: 3px; z-index: 0; }
+
+  .srow {
+    position: relative; z-index: 1; display: flex; align-items: center; gap: 20px;
+    background: var(--bg); border: 1px solid var(--border); border-radius: 16px;
+    padding: 14px 20px 14px 14px; cursor: pointer; outline: none;
     transition: opacity 350ms cubic-bezier(0.4,0,0.2,1), transform 350ms cubic-bezier(0.4,0,0.2,1),
                 border-color 350ms ease, box-shadow 350ms ease, filter 350ms ease;
     opacity: 0;
   }
-  .mailcard.strong { --accent: var(--green); --accent-soft: var(--green-soft); --accent-glow: var(--green-glow); }
-  .mailcard.intro { animation: scaleIn 0.7s ease both; }
-  .mailcard.intro.m1 { animation-delay: 0.5s; }
-  .mailcard.intro.m2 { animation-delay: 0.64s; }
+  .srow.intro { animation: scaleIn 0.5s ease both; }
+  .srow.intro.r1 { animation-delay: 0.8s; }
+  .srow.intro.r2 { animation-delay: 0.88s; }
+  .srow.intro.r3 { animation-delay: 0.96s; }
+  .srow.intro.r4 { animation-delay: 1.04s; }
+  .srow.intro.r5 { animation-delay: 1.12s; }
+  .srow.intro.r6 { animation-delay: 1.2s; }
 
-  .compare.has-active .mailcard:not(.active) { opacity: 0.5; filter: saturate(0.5) blur(1px); transform: scale(0.985); }
-  .mailcard.active {
-    opacity: 1; filter: none; transform: translateY(-5px) scale(1.01);
-    border-color: var(--accent); box-shadow: 0 18px 38px -14px var(--accent-glow), 0 0 0 4px var(--accent-soft);
+  .status.has-active .srow:not(.active) { opacity: 0.5; filter: saturate(0.5) blur(1px); }
+  .srow.active { transform: translateX(3px); border-color: var(--primary); box-shadow: 0 14px 30px -14px var(--glow), 0 0 0 4px rgba(37,99,235,0.06); }
+
+  .letter {
+    flex-shrink: 0; width: 50px; height: 50px; border-radius: 13px;
+    background: var(--surface); border: 2px solid var(--border);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 25px; font-weight: 900; color: var(--muted); letter-spacing: -0.02em;
+    transition: all 0.35s cubic-bezier(0.25,0.8,0.25,1);
   }
+  .srow.active .letter { background: var(--primary); border-color: var(--primary); color: #fff; transform: scale(1.08); box-shadow: 0 0 0 5px rgba(37,99,235,0.16); }
 
-  .mc-head { display: flex; align-items: center; justify-content: space-between; padding: 15px 20px; border-bottom: 1px solid var(--border); background: var(--surface); }
-  .mc-tag { display: inline-flex; align-items: center; gap: 9px; font-size: 13px; font-weight: 800; color: var(--accent); }
-  .mc-tag svg { width: 18px; height: 18px; stroke: var(--accent); fill: none; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
-  .mc-chip { font-size: 10.5px; font-weight: 800; letter-spacing: 0.5px; text-transform: uppercase; color: var(--accent); background: var(--accent-soft); border-radius: 7px; padding: 4px 9px; }
+  .scontent { flex: 1; min-width: 0; }
+  .sname { font-size: 18px; font-weight: 800; color: var(--headline); letter-spacing: -0.01em; transition: color 0.3s ease; }
+  .srow.active .sname { color: var(--primary); }
+  .sdesc { font-size: 15.5px; color: var(--body); line-height: 1.5; margin-top: 3px; }
+  .sdesc .mono { font-family: 'JetBrains Mono', monospace; font-size: 14.5px; color: var(--headline); }
 
-  .mc-subject { padding: 13px 20px 11px; border-bottom: 1px dashed var(--border); }
-  .mc-subject .lbl { font-family: 'JetBrains Mono', monospace; font-size: 10.5px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px; }
-  .mc-subject .txt { font-size: 14px; font-weight: 700; color: var(--headline); line-height: 1.4; margin-top: 4px; }
-  .mc-subject .amb { color: var(--amber); }
-
-  .mc-body { padding: 18px 20px 20px; font-size: 13.5px; color: var(--body); line-height: 1.62; flex: 1; }
-  .mc-body .greet { color: var(--headline); font-weight: 600; margin: 0 0 11px; }
-  .mc-body p { margin: 0 0 11px; }
-  .mc-body p:last-child { margin-bottom: 0; }
-
-  /* STATUS-tagged sections (strong email) */
-  .sec { display: flex; gap: 11px; margin-bottom: 12px; }
-  .sec .stag { flex-shrink: 0; width: 22px; height: 22px; border-radius: 7px; background: var(--green-soft); color: var(--green); font-weight: 900; font-size: 12px; display: flex; align-items: center; justify-content: center; margin-top: 1px; }
-  .sec .scopy { font-size: 13px; line-height: 1.5; }
-  .sec .scopy .lab { font-weight: 800; color: var(--headline); letter-spacing: 0.3px; }
-  .sec.risk { padding: 9px 11px; background: var(--amber-soft); border-left: 3px solid var(--amber); border-radius: 0 8px 8px 0; margin-left: -2px; }
-  .sec.risk .stag { background: rgba(245,158,11,0.18); color: var(--amber); }
-  .rag { display: inline-flex; align-items: center; gap: 6px; }
+  .rag { display: inline-flex; align-items: center; gap: 6px; margin-left: 8px; vertical-align: middle; }
   .rag i { width: 9px; height: 9px; border-radius: 50%; display: inline-block; }
   .rag .r { background: var(--rose); } .rag .a { background: var(--amber); } .rag .g { background: var(--green); }
 
-  .pin-dot { position: absolute; top: 14px; right: 14px; width: 8px; height: 8px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 0 4px var(--accent-soft); opacity: 0; transform: scale(0.4); transition: opacity 250ms ease, transform 250ms ease; z-index: 3; }
-  .mailcard.pinned .pin-dot { opacity: 1; transform: scale(1); }
+  .pin-dot { position: absolute; top: 13px; right: 13px; width: 8px; height: 8px; border-radius: 50%; background: var(--primary); box-shadow: 0 0 0 4px rgba(37,99,235,0.18); opacity: 0; transform: scale(0.4); transition: opacity 250ms ease, transform 250ms ease; }
+  .srow.pinned .pin-dot { opacity: 1; transform: scale(1); }
 
-  /* ─── TAKEAWAY ─── */
-  .takeaway {
-    position: relative; background: var(--surface); border: 1px solid var(--border);
-    border-radius: 18px; padding: 22px 28px 22px 30px; overflow: hidden;
-    opacity: 0; animation: fadeDown 0.8s ease 0.95s both;
+  /* ─── MEMORY PROMPT ─── */
+  .memory {
+    display: flex; align-items: center; gap: 14px; margin-top: 26px;
+    background: var(--surface); border: 1px dashed var(--primary); border-radius: 16px; padding: 16px 22px;
+    opacity: 0; animation: fadeDown 0.8s ease 1.3s both;
   }
-  .takeaway::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 6px; background: var(--primary); }
-  .tk-top { display: flex; align-items: center; gap: 14px; margin-bottom: 9px; }
-  .tk-mark { flex-shrink: 0; width: 40px; height: 40px; border-radius: 50%; background: rgba(37,99,235,0.1); display: flex; align-items: center; justify-content: center; animation: breathe 3.4s ease-in-out infinite; }
-  .tk-mark svg { width: 20px; height: 20px; stroke: var(--primary); fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
-  .tk-title { font-size: 17px; font-weight: 800; color: var(--headline); letter-spacing: -0.01em; }
-  .tk-text { font-size: 14.5px; color: var(--body); line-height: 1.6; }
-  .tk-text .em { color: var(--headline); font-weight: 700; }
+  .memory svg { width: 22px; height: 22px; stroke: var(--primary); fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; flex-shrink: 0; }
+  .memory-text { font-size: 16.5px; color: var(--headline); font-weight: 500; line-height: 1.5; }
+  .memory-text strong { font-weight: 800; }
 
   /* ─── KEYFRAMES ─── */
   @keyframes fadeDown { from { opacity: 0; transform: translateY(-18px); } to { opacity: 1; transform: translateY(0); } }
-  @keyframes scaleIn  { from { opacity: 0; transform: scale(0.94); } to { opacity: 1; transform: scale(1); } }
-  @keyframes breathe  { 0%,100% { transform: scale(1); } 50% { transform: scale(1.1); } }
+  @keyframes scaleIn  { from { opacity: 0; transform: scale(0.96); } to { opacity: 1; transform: scale(1); } }
 
   /* ─── RESPONSIVE ─── */
   @media (max-width: 860px) {
-    .headline { font-size: 32px; }
-    .compare { flex-direction: column; }
+    .headline { font-size: 33px; }
+    .setup { flex-direction: column; }
   }
   @media (max-width: 540px) {
     body { padding: 40px 18px; }
-    .headline { font-size: 26px; }
-    .ctx { flex-direction: column; text-align: center; }
-    .tk-top { flex-direction: column; align-items: flex-start; }
+    .headline { font-size: 28px; }
+    .srow { gap: 14px; padding: 12px 14px; align-items: flex-start; }
+    .status::before { display: none; }
+    .memory { flex-direction: column; align-items: flex-start; }
   }
 
   @media (prefers-reduced-motion: reduce) {
@@ -198,7 +205,7 @@
   pointer-events: none;
 }
 .slide-nav .nav-label {
-  font-size: 13px;
+  font-size: 15px;
   font-weight: 500;
   color: #5f6368;
   background: rgba(255,255,255,0.9);
@@ -211,6 +218,7 @@
 
 </style>
 <style id="fit-css">
+@media (min-width:900px){body{padding-top:24px !important;padding-bottom:104px !important}}
 /* ===== SCREEN FIT ===== */
 html{overflow-x:hidden}
 body{overflow-x:hidden}
@@ -222,102 +230,42 @@ body{overflow-x:hidden}
 <body>
   <div class="deck">
 
-    <div class="head">
-      <span class="label"><span class="dot"></span>Section 03 · STATUS in action</span>
-      <h1 class="headline">The same week, two ways</h1>
-      <span class="ctx"><svg viewBox="0 0 24 24"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line></svg>Week 6 of 10. NLP module slightly behind on data quality. <b>The client has a board update next week.</b></span>
+<div class="head">
+      <span class="label"><span class="dot"></span>Section 03 · Status reporting</span>
+      <h1 class="headline">Structure is a form of respect</h1>
     </div>
 
-    <div class="compare has-active" id="compare">
-
-      <div class="mailcard weak intro m1" role="button" tabindex="0" aria-pressed="false" aria-label="The vague update">
-        <span class="pin-dot" aria-hidden="true"></span>
-        <div class="mc-head">
-          <span class="mc-tag"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg>The vague update</span>
-          <span class="mc-chip">Without</span>
-        </div>
-        <div class="mc-subject"><div class="lbl">Subject</div><div class="txt">Week 6 update</div></div>
-        <div class="mc-body">
-          <p class="greet">Hi team,</p>
-          <p>This week we continued work on the NLP classification module and made solid progress. We ran into some issues with the training data but are working through them and expect to have things back on track soon.</p>
-          <p>Next week we'll continue with model fine-tuning. Let us know if you have any questions.</p>
-          <p>Thanks</p>
+    <div class="setup">
+      <div class="col-scene">
+        <div class="scene">
+          <div class="scene-bar"><span class="live"></span>Friday status update · Healthcare AI engagement, Week 6 of 10</div>
+          <div class="scene-inner">
+            <div class="scene-from"><b>The FDE sends:</b></div>
+            <div class="scene-quote">"This week we continued working on the NLP classification module and made <span class="vague">good progress</span>. There were some challenges with the training data quality but we are working through them. Next week we will continue with model fine-tuning and <span class="vague">hopefully</span> have something to show <span class="vague">soon</span>."</div>
+            <div class="scene-react">The client's project lead reads this and thinks: what does "good progress" mean? Are we on track? What are the data quality challenges? What does "hopefully" mean for the Week 8 milestone we committed to? She forwards the update to her VP with a note: <span class="note">"I'm not sure where we actually stand."</span></div>
+            <span class="trust"><svg viewBox="0 0 24 24"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>The beginning of a trust problem</span>
+          </div>
         </div>
       </div>
 
-      <div class="mailcard strong intro m2 active" role="button" tabindex="0" aria-pressed="false" aria-label="The STATUS update">
-        <span class="pin-dot" aria-hidden="true"></span>
-        <div class="mc-head">
-          <span class="mc-tag"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg>The STATUS update</span>
-          <span class="mc-chip">With</span>
-        </div>
-        <div class="mc-subject"><div class="lbl">Subject</div><div class="txt">Week 6 status update — NLP module | <span class="amb">Amber on timeline</span></div></div>
-        <div class="mc-body">
-          <p class="greet">Hi [Name],</p>
-          <div class="sec"><span class="stag" aria-hidden="true">S</span><div class="scopy"><span class="lab">SUMMARY:</span> Engagement is progressing well overall. One risk to flag on timeline, details below.</div></div>
-          <div class="sec"><span class="stag" aria-hidden="true">T</span><div class="scopy"><span class="lab">THIS WEEK:</span> Completed data preprocessing pipeline (100%). Ran initial fine-tuning pass on NLP classifier. F1 score at 0.74 against 0.80 target.</div></div>
-          <div class="sec"><span class="stag" aria-hidden="true">A</span><div class="scopy"><span class="lab">NEXT WEEK:</span> Second fine-tuning pass with cleaned dataset. Integration with the API layer begins Thursday.</div></div>
-          <div class="sec risk"><span class="stag" aria-hidden="true">T</span><div class="scopy"><span class="lab">RISK:</span> Training data has ~12% label noise in the clinical notes subset. We've identified the source and are reprocessing. This adds an estimated 2 days. Current projection: Week 7 delivery instead of end of Week 6.</div></div>
-          <div class="sec"><span class="stag" aria-hidden="true">U</span><div class="scopy"><span class="lab">ACTION NEEDED:</span> None from your side this week. We'll confirm revised timeline by Monday.</div></div>
-          <div class="sec"><span class="stag" aria-hidden="true">S</span><div class="scopy"><span class="lab">SCORE:</span> Timeline — Amber. Scope — Green. Quality — Green. <span class="rag" aria-hidden="true"><i class="a"></i><i class="g"></i><i class="g"></i></span></div></div>
-          <p style="color:var(--headline);font-weight:600;margin-top:4px;">Thanks, [Name]</p>
+      <div class="col-insight">
+        <div class="insight">
+          <div class="insight-eyebrow">Why structure matters</div>
+          <div class="insight-text">Status reports are the primary mechanism by which a client stays informed, confident, and aligned with the FDE. <span class="em">A well-written status report does three things simultaneously.</span> A vague one does the opposite of all three.</div>
+          <div class="ichips">
+            <span class="ichip"><svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>Proves the FDE is in control</span>
+            <span class="ichip"><svg viewBox="0 0 24 24"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line></svg>Surfaces risks before they become problems</span>
+            <span class="ichip"><svg viewBox="0 0 24 24"><path d="M14 3v4a1 1 0 0 0 1 1h4"></path><path d="M17 21H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h7l5 5v11a2 2 0 0 1-2 2z"></path></svg>Creates a paper trail of accountability</span>
+          </div>
         </div>
       </div>
-
     </div>
 
-    <div class="takeaway">
-      <div class="tk-top">
-        <div class="tk-mark" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path></svg></div>
-        <div class="tk-title">Which would you rather receive before a board presentation?</div>
-      </div>
-      <div class="tk-text">The second email takes 10 minutes longer to write. It saves hours of back-and-forth and, more importantly, <span class="em">it builds trust.</span></div>
-    </div>
+    
 
   </div>
 
-<script>
-  (function () {
-    const wrap = document.getElementById('compare');
-    const items = Array.from(wrap.querySelectorAll('.mailcard'));
-    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-    let idx = 0, pinned = false;
-    let cycleTimer = null, resumeTimer = null, resetTimer = null;
-
-    function setActive(i) {
-      idx = i;
-      wrap.classList.add('has-active');
-      items.forEach((it, j) => {
-        const on = j === i;
-        it.classList.toggle('active', on);
-        it.setAttribute('aria-pressed', (on && pinned) ? 'true' : 'false');
-      });
-    }
-    function startCycle() { if (reduceMotion || pinned) return; stopCycle(); cycleTimer = setInterval(() => setActive((idx + 1) % items.length), 3200); }
-    function stopCycle() { clearInterval(cycleTimer); cycleTimer = null; }
-    function pauseForUser() { stopCycle(); clearTimeout(resumeTimer); }
-    function scheduleResume() { if (pinned) return; clearTimeout(resumeTimer); resumeTimer = setTimeout(startCycle, 5000); }
-
-    items.forEach((it, i) => {
-      const focusIn = () => { if (pinned) return; clearTimeout(resetTimer); pauseForUser(); setActive(i); };
-      const focusOut = () => { if (pinned) return; resetTimer = setTimeout(scheduleResume, 150); };
-      it.addEventListener('mouseenter', focusIn);
-      it.addEventListener('focus', focusIn);
-      it.addEventListener('mouseleave', focusOut);
-      it.addEventListener('blur', focusOut);
-      const toggle = () => {
-        if (pinned && it.classList.contains('active')) { pinned = false; it.classList.remove('pinned'); setActive(i); scheduleResume(); }
-        else { pinned = true; stopCycle(); clearTimeout(resumeTimer); items.forEach(x => x.classList.remove('pinned')); it.classList.add('pinned'); setActive(i); }
-      };
-      it.addEventListener('click', toggle);
-      it.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggle(); } });
-    });
-
-    setActive(0);
-    if (!reduceMotion) setTimeout(startCycle, 3200);
-  })();
-</script>
 
 
 
@@ -325,10 +273,9 @@ body{overflow-x:hidden}
 <div class="fit-spacer" style="height:96px" aria-hidden="true"></div>
 <div class="slide-nav">
   <a href="slide-08.html" class="nav-btn" title="Previous"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"></polyline></svg></a>
-  <span class="nav-label">9 / 14</span>
+  <span class="nav-label">9 / 17</span>
   <a href="slide-10.html" class="nav-btn" title="Next"><svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"></polyline></svg></a>
 </div>
-
 <script id="fit-js">
 (function(){
   var t=null,kids=document.body.children;
@@ -339,7 +286,7 @@ body{overflow-x:hidden}
   function fit(){
     t.style.zoom=1;
     if(window.innerWidth<900)return;
-    var h=t.getBoundingClientRect().height,avail=window.innerHeight-118;
+    var h=t.getBoundingClientRect().height,avail=window.innerHeight-parseFloat(getComputedStyle(document.body).paddingTop)-parseFloat(getComputedStyle(document.body).paddingBottom);
     if(h<=avail)return;
     t.style.zoom=Math.max(0.72,avail/h);
   }
