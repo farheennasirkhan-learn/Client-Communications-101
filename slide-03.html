@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Why This Matters for an FDE</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+
+  :root {
+    --primary: #2563eb;
+    --primary-light: #60a5fa;
+    --glow: rgba(37, 99, 235, 0.18);
+    --bg: #ffffff;
+    --surface: #f8fafc;
+    --border: #e2e8f0;
+    --headline: #0f172a;
+    --body: #475569;
+    --muted: #94a3b8;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    background: var(--bg);
+    color: var(--body);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 56px 24px;
+    line-height: 1.6;
+  }
+
+  .deck { width: 100%; max-width: 1080px; }
+
+  .head { text-align: center; max-width: 720px; margin: 0 auto 48px; }
+  .label {
+    display: inline-flex; align-items: center; gap: 10px;
+    font-size: 11px; font-weight: 800; letter-spacing: 2px;
+    text-transform: uppercase; color: var(--primary); margin-bottom: 16px;
+    opacity: 0; animation: fadeDown 0.8s ease 0.1s both;
+  }
+  .label .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--primary); }
+  .headline {
+    font-size: 42px; font-weight: 900; letter-spacing: -0.03em;
+    line-height: 1.1; color: var(--headline); margin: 0 0 16px;
+    opacity: 0; animation: fadeDown 0.8s ease 0.25s both;
+  }
+  .sub {
+    font-size: 17px; color: var(--body); line-height: 1.6; margin: 0;
+    opacity: 0; animation: fadeDown 0.8s ease 0.4s both;
+  }
+  .sub .accent { color: var(--headline); font-weight: 600; }
+
+  .cards {
+    display: flex; flex-direction: row; flex-wrap: nowrap;
+    align-items: stretch; gap: 20px; width: 100%;
+  }
+
+  .card {
+    position: relative; flex: 1 1 0; min-width: 0;
+    background: var(--bg);
+    border: 2px solid var(--border);
+    border-radius: 22px;
+    padding: 30px 26px;
+    cursor: pointer; outline: none;
+    display: flex; flex-direction: column;
+    transition: opacity 300ms ease, transform 300ms cubic-bezier(0.34, 1.2, 0.64, 1),
+                border-color 300ms ease, box-shadow 300ms ease, filter 300ms ease, background 300ms ease;
+    opacity: 0;
+  }
+  .card.intro { animation: scaleIn 0.6s ease 0.6s both; }
+  .card.intro.c2 { animation-delay: 0.74s; }
+  .card.intro.c3 { animation-delay: 0.88s; }
+
+  /* Whole-tile hover pop */
+  .card:hover {
+    transform: translateY(-8px) scale(1.02);
+    border-color: var(--primary);
+    box-shadow: 0 20px 40px -14px var(--glow), 0 0 0 4px rgba(37,99,235,0.08);
+    background: #fff;
+    z-index: 2;
+  }
+  .card:hover .card-icon {
+    background: var(--primary);
+    transform: rotate(-4deg) scale(1.08);
+  }
+  .card:hover .card-icon svg { stroke: #ffffff; }
+  .card:hover .card-num { color: var(--primary); }
+
+  .cards.has-active .card:not(.active):not(:hover) {
+    opacity: 0.55; filter: saturate(0.6); transform: scale(0.98);
+  }
+  .card.active {
+    opacity: 1; filter: none;
+    transform: translateY(-8px) scale(1.02);
+    border-color: var(--primary);
+    box-shadow: 0 20px 40px -14px var(--glow), 0 0 0 4px rgba(37,99,235,0.08);
+  }
+  .card.active .card-icon {
+    background: var(--primary);
+    transform: rotate(-4deg) scale(1.08);
+  }
+  .card.active .card-icon svg { stroke: #ffffff; }
+  .card.active .card-num { color: var(--primary); }
+
+  .card-icon {
+    width: 52px; height: 52px; border-radius: 15px;
+    background: #eff6ff;
+    display: flex; align-items: center; justify-content: center;
+    margin-bottom: 18px;
+    transition: background 300ms ease, transform 300ms cubic-bezier(0.34, 1.2, 0.64, 1);
+    flex-shrink: 0;
+  }
+  .card-icon svg {
+    width: 26px; height: 26px;
+    stroke: var(--primary);
+    fill: none;
+    stroke-width: 2.2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    transition: stroke 300ms ease;
+  }
+
+  .card-num {
+    font-size: 11px; font-weight: 800; letter-spacing: 1.5px;
+    text-transform: uppercase; color: var(--muted); margin-bottom: 6px;
+    transition: color 300ms ease;
+  }
+  .card-title {
+    font-size: 19px; font-weight: 800; letter-spacing: -0.01em;
+    color: var(--headline); margin-bottom: 12px; line-height: 1.25;
+  }
+  .card-body { font-size: 14.5px; color: var(--body); line-height: 1.6; }
+
+  .pin-dot {
+    position: absolute; top: 15px; right: 15px;
+    width: 8px; height: 8px; border-radius: 50%;
+    background: var(--primary); box-shadow: 0 0 0 4px rgba(37,99,235,0.18);
+    opacity: 0; transform: scale(0.4); transition: opacity 250ms ease, transform 250ms ease;
+  }
+  .card.pinned .pin-dot { opacity: 1; transform: scale(1); }
+
+  .band {
+    position: relative; margin-top: 36px;
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 18px; padding: 22px 26px;
+    display: flex; align-items: flex-start; gap: 16px;
+    opacity: 0; animation: fadeDown 0.7s ease 1.1s both;
+  }
+  .band-mark {
+    width: 40px; height: 40px; border-radius: 12px; background: #eff6ff;
+    display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+  }
+  .band-mark svg { width: 20px; height: 20px; stroke: var(--primary); fill: none; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
+  .band-text { font-size: 15.5px; color: var(--body); line-height: 1.55; }
+  .band-text strong { color: var(--headline); font-weight: 700; }
+
+  @keyframes fadeDown {
+    from { opacity: 0; transform: translateY(-14px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes scaleIn {
+    from { opacity: 0; transform: scale(0.96) translateY(12px); }
+    to { opacity: 1; transform: scale(1) translateY(0); }
+  }
+
+  @media (max-width: 860px) {
+    .headline { font-size: 32px; }
+    .cards { flex-wrap: wrap; }
+    .card { flex: 1 1 100%; }
+  }
+  @media (max-width: 540px) {
+    body { padding: 40px 16px; }
+    .headline { font-size: 28px; }
+    .cards { flex-direction: column; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation: none !important; transition: none !important; }
+  }
+
+  .slide-nav {
+    position: fixed; bottom: 28px; left: 50%; transform: translateX(-50%);
+    display: flex; align-items: center; gap: 16px; z-index: 9999;
+    font-family: 'Inter', system-ui, sans-serif;
+  }
+  .slide-nav .nav-btn {
+    display: flex; align-items: center; justify-content: center;
+    width: 48px; height: 48px; border-radius: 14px;
+    background: #111; color: #fff; text-decoration: none;
+    transition: all 0.2s ease; box-shadow: 0 4px 14px rgba(0,0,0,0.25);
+  }
+  .slide-nav .nav-btn:hover { background: #333; transform: scale(1.06); }
+  .slide-nav .nav-btn svg {
+    width: 22px; height: 22px; fill: none; stroke: #fff;
+    stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round;
+  }
+  .slide-nav .nav-disabled { opacity: 0.25; pointer-events: none; }
+  .slide-nav .nav-label {
+    font-size: 13px; font-weight: 500; color: #5f6368;
+    background: rgba(255,255,255,0.9); backdrop-filter: blur(10px);
+    padding: 8px 14px; border-radius: 999px;
+    border: 1px solid rgba(0,0,0,0.06); box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  }
+</style>
+<style id="fit-css">
+/* ===== SCREEN FIT ===== */
+html{overflow-x:hidden}
+body{overflow-x:hidden}
+@media (min-width:900px) and (max-height:820px){
+  .tw-slide{padding-top:28px !important;padding-bottom:24px !important;min-height:0 !important}
+}
+</style>
+</head>
+<body>
+<div class="deck">
+  <div class="head">
+    <span class="label"><span class="dot"></span>Why this matters</span>
+    <h1 class="headline">Why this matters for an FDE</h1>
+    <p class="sub">Three reasons communication sits at the centre of the role — not on the side of it.</p>
+  </div>
+
+  <div class="cards has-active" id="cards" role="list">
+
+    <div class="card intro c1" role="listitem button" tabindex="0" aria-pressed="false">
+      <span class="pin-dot" aria-hidden="true"></span>
+      <div class="card-icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>
+      </div>
+      <div class="card-num">Point 01</div>
+      <div class="card-title">You are the interface</div>
+      <div class="card-body">FDEs operate at the interface between Turing and the client. Every email, every status update, every difficult conversation is a direct representation of Turing's professionalism.</div>
+    </div>
+
+    <div class="card intro c2" role="listitem button" tabindex="0" aria-pressed="false">
+      <span class="pin-dot" aria-hidden="true"></span>
+      <div class="card-icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+      </div>
+      <div class="card-num">Point 02</div>
+      <div class="card-title">Clients are under pressure</div>
+      <div class="card-body">Clients in enterprise AI engagements are under pressure. Their leadership is watching. Their timelines are tight. An FDE who communicates with clarity makes their job easier, and that gets noticed.</div>
+    </div>
+
+    <div class="card intro c3 active" role="listitem button" tabindex="0" aria-pressed="false">
+      <span class="pin-dot" aria-hidden="true"></span>
+      <div class="card-icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline><polyline points="17 6 23 6 23 12"></polyline></svg>
+      </div>
+      <div class="card-num">Point 03</div>
+      <div class="card-title">Clarity is how you grow fastest</div>
+      <div class="card-body">The FDEs who grow fastest in this role are the ones who make the client feel in control, even when things are difficult. Communication is how that happens.</div>
+    </div>
+
+  </div>
+
+  <div class="band">
+    <div class="band-mark" aria-hidden="true">
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"></circle><line x1="12" y1="8" x2="12" y2="13"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+    </div>
+    <div class="band-text">And it matters more for an FDE than almost any other role, because <strong>you're the person the client sees every day.</strong></div>
+  </div>
+</div>
+
+<script>
+  (function () {
+    const wrap = document.getElementById('cards');
+    const cards = Array.from(wrap.querySelectorAll('.card'));
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    let idx = 0, pinned = false;
+    let cycleTimer = null, resumeTimer = null, resetTimer = null;
+
+    function setActive(i) {
+      idx = i;
+      wrap.classList.add('has-active');
+      cards.forEach((c, j) => {
+        const on = j === i;
+        c.classList.toggle('active', on);
+        c.setAttribute('aria-pressed', (on && pinned) ? 'true' : 'false');
+      });
+    }
+    function startCycle() {
+      if (reduceMotion || pinned) return;
+      stopCycle();
+      cycleTimer = setInterval(() => setActive((idx + 1) % cards.length), 3000);
+    }
+    function stopCycle() { clearInterval(cycleTimer); cycleTimer = null; }
+    function pauseForUser() { stopCycle(); clearTimeout(resumeTimer); }
+    function scheduleResume() {
+      if (pinned) return;
+      clearTimeout(resumeTimer);
+      resumeTimer = setTimeout(startCycle, 5000);
+    }
+
+    cards.forEach((card, i) => {
+      const focusIn = () => { if (pinned) return; clearTimeout(resetTimer); pauseForUser(); setActive(i); };
+      const focusOut = () => { if (pinned) return; resetTimer = setTimeout(scheduleResume, 150); };
+      card.addEventListener('mouseenter', focusIn);
+      card.addEventListener('focus', focusIn);
+      card.addEventListener('mouseleave', focusOut);
+      card.addEventListener('blur', focusOut);
+
+      const toggle = () => {
+        if (pinned && card.classList.contains('active')) {
+          pinned = false; card.classList.remove('pinned'); setActive(i); scheduleResume();
+        } else {
+          pinned = true; stopCycle(); clearTimeout(resumeTimer);
+          cards.forEach(c => c.classList.remove('pinned'));
+          card.classList.add('pinned'); setActive(i);
+        }
+      };
+      card.addEventListener('click', toggle);
+      card.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggle(); }
+      });
+    });
+
+    setActive(0);
+    if (!reduceMotion) setTimeout(startCycle, 3000);
+  })();
+</script>
+
+
+<div class="fit-spacer" style="height:96px" aria-hidden="true"></div>
+<div class="slide-nav">
+  <a href="slide-02.html" class="nav-btn" title="Previous"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"></polyline></svg></a>
+  <span class="nav-label">3 / 14</span>
+  <a href="slide-04.html" class="nav-btn" title="Next"><svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"></polyline></svg></a>
+</div>
+
+<script id="fit-js">
+(function(){
+  var t=null,kids=document.body.children;
+  for(var i=0;i<kids.length;i++){var k=kids[i];
+    if(/^(SCRIPT|STYLE|LINK|NOSCRIPT)$/.test(k.tagName)||k.classList.contains('slide-nav')||k.classList.contains('fit-spacer'))continue;
+    t=k;break;}
+  if(!t)return;
+  function fit(){
+    t.style.zoom=1;
+    if(window.innerWidth<900)return;
+    var h=t.getBoundingClientRect().height,avail=window.innerHeight-118;
+    if(h<=avail)return;
+    t.style.zoom=Math.max(0.72,avail/h);
+  }
+  window.addEventListener('load',fit);
+  window.addEventListener('resize',fit);
+  if(document.fonts&&document.fonts.ready)document.fonts.ready.then(fit);
+  setTimeout(fit,400);setTimeout(fit,1500);fit();
+})();
+</script>
+</body>
+</html>

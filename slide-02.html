@@ -1,0 +1,435 @@
+<html lang="en"><head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Client Communications — Cover</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+
+  :root {
+    --primary: #2563eb;
+    --primary-light: #60a5fa;
+    --glow: rgba(37, 99, 235, 0.15);
+    --bg: #ffffff;
+    --surface: #f8fafc;
+    --border: #e2e8f0;
+    --headline: #0f172a;
+    --body: #475569;
+    --muted: #94a3b8;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    background: var(--bg);
+    color: var(--body);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 56px 24px;
+    line-height: 1.6;
+  }
+
+  .deck { width: 100%; max-width: 1080px; }
+
+  /* ─── HERO ─── */
+  .hero { text-align: center; margin-bottom: 56px; }
+
+  .kicker {
+    display: inline-flex; align-items: center; gap: 10px;
+    font-size: 11px; font-weight: 800; letter-spacing: 2px;
+    text-transform: uppercase; color: var(--primary);
+    margin-bottom: 22px;
+    opacity: 0; animation: fadeDown 0.8s ease 0.1s both;
+  }
+  .kicker .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--primary); }
+
+  .display {
+    font-size: 60px; font-weight: 900; letter-spacing: -0.04em;
+    line-height: 1.05; margin: 0 0 18px;
+    background: linear-gradient(to right, #2563eb, #60a5fa);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+    opacity: 0; animation: fadeDown 0.8s ease 0.25s both;
+  }
+
+  .lede {
+    font-size: 18px; color: var(--body); line-height: 1.6;
+    max-width: 660px; margin: 0 auto;
+    opacity: 0; animation: fadeDown 0.8s ease 0.4s both;
+  }
+  .lede strong { color: var(--headline); font-weight: 700; }
+
+  /* ─── AGENDA TRACK ─── */
+  .track-head {
+    display: flex; align-items: baseline; justify-content: space-between;
+    gap: 16px; margin-bottom: 18px; flex-wrap: wrap;
+    opacity: 0; animation: fadeDown 0.8s ease 0.55s both;
+  }
+  .track-label {
+    font-size: 11px; font-weight: 800; letter-spacing: 2px;
+    text-transform: uppercase; color: var(--primary);
+  }
+  .track-total { font-size: 13px; font-weight: 600; color: var(--muted); }
+
+  .agenda {
+    display: flex; flex-direction: row; flex-wrap: nowrap;
+    align-items: stretch; gap: 18px; width: 100%;
+  }
+
+  .phase {
+    position: relative; flex: 1 1 0; min-width: 0;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 26px 22px 24px;
+    cursor: pointer; outline: none;
+    transition: opacity 350ms cubic-bezier(0.4,0,0.2,1),
+                transform 350ms cubic-bezier(0.4,0,0.2,1),
+                border-color 350ms ease, box-shadow 350ms ease, filter 350ms ease;
+    opacity: 0;
+  }
+  .phase.intro-anim { animation: scaleIn 0.6s ease 0.7s both; }
+  .phase.intro-anim.p2 { animation-delay: 0.82s; }
+  .phase.intro-anim.p3 { animation-delay: 0.94s; }
+  .phase.intro-anim.p4 { animation-delay: 1.06s; }
+
+  /* Focus / defocus model */
+  .agenda.has-active .phase:not(.active) {
+    opacity: 0.5; filter: saturate(0.55) blur(1px); transform: scale(0.98);
+  }
+  .phase.active {
+    opacity: 1; filter: none; transform: translateY(-6px) scale(1.02);
+    border-color: var(--primary);
+    box-shadow: 0 18px 36px -12px var(--glow), 0 0 0 4px rgba(37,99,235,0.06);
+  }
+
+  .phase-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
+
+  .phase-icon {
+    width: 46px; height: 46px; border-radius: 13px;
+    background: var(--surface); display: flex; align-items: center; justify-content: center;
+    transition: background 350ms ease;
+  }
+  .phase-icon svg { width: 22px; height: 22px; stroke: var(--primary); fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; transition: stroke 350ms ease; }
+  .phase.active .phase-icon { background: var(--primary); }
+  .phase.active .phase-icon svg { stroke: #ffffff; }
+
+  .phase-time {
+    font-size: 12px; font-weight: 800; letter-spacing: 0.4px;
+    color: var(--muted); background: var(--surface);
+    border-radius: 999px; padding: 5px 11px; white-space: nowrap;
+    transition: color 350ms ease, background 350ms ease;
+  }
+  .phase.active .phase-time { color: var(--primary); background: rgba(37,99,235,0.1); }
+
+  .phase-step { font-size: 11px; font-weight: 800; letter-spacing: 1px; text-transform: uppercase; color: var(--muted); margin-bottom: 6px; }
+  .phase-name { font-size: 18px; font-weight: 800; color: var(--headline); margin-bottom: 10px; letter-spacing: -0.01em; }
+  .phase-desc { font-size: 13.5px; color: var(--body); line-height: 1.55; }
+
+  /* Pin indicator */
+  .pin-dot {
+    position: absolute; top: 13px; right: 13px;
+    width: 8px; height: 8px; border-radius: 50%;
+    background: var(--primary); box-shadow: 0 0 0 4px rgba(37,99,235,0.18);
+    opacity: 0; transform: scale(0.4); transition: opacity 250ms ease, transform 250ms ease;
+  }
+  .phase.pinned .pin-dot { opacity: 1; transform: scale(1); }
+
+  /* ─── FOOTER ─── */
+  .deck-foot {
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 20px; flex-wrap: wrap; margin-top: 38px;
+    padding-top: 24px; border-top: 1px solid var(--border);
+    opacity: 0; animation: fadeDown 0.8s ease 1.2s both;
+  }
+  .skills { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+  .skills-label { font-size: 11px; font-weight: 800; letter-spacing: 1.5px; text-transform: uppercase; color: var(--muted); margin-right: 4px; }
+  .chip {
+    font-size: 13px; font-weight: 600; color: var(--primary);
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 999px; padding: 6px 14px;
+  }
+  .audience { font-size: 13px; color: var(--muted); font-weight: 500; }
+  .audience strong { color: var(--body); font-weight: 700; }
+
+  /* ─── KEYFRAMES ─── */
+  @keyframes fadeDown { from { opacity: 0; transform: translateY(-18px); } to { opacity: 1; transform: translateY(0); } }
+  @keyframes scaleIn  { from { opacity: 0; transform: scale(0.92); } to { opacity: 1; transform: scale(1); } }
+
+  /* ─── RESPONSIVE ─── */
+  @media (max-width: 860px) {
+    .display { font-size: 46px; }
+    .agenda { flex-wrap: wrap; }
+    .phase { flex: 1 1 calc(50% - 9px); }
+  }
+  @media (max-width: 540px) {
+    body { padding: 40px 18px; }
+    .display { font-size: 36px; }
+    .agenda { flex-direction: column; }
+    .phase { flex: 1 1 auto; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation: none !important; transition: none !important; }
+  }
+
+
+
+
+
+/* ===== SLIDE NAV ===== */
+.slide-nav {
+  position: fixed;
+  bottom: 28px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  z-index: 9999;
+  font-family: 'Poppins', system-ui, sans-serif;
+}
+.slide-nav .nav-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  border-radius: 14px;
+  background: #111;
+  color: #fff;
+  text-decoration: none;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 14px rgba(0,0,0,0.25);
+}
+.slide-nav .nav-btn:hover {
+  background: #333;
+  transform: scale(1.06);
+}
+.slide-nav .nav-btn svg {
+  width: 22px;
+  height: 22px;
+  fill: none;
+  stroke: #fff;
+  stroke-width: 2.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.slide-nav .nav-disabled {
+  opacity: 0.25;
+  pointer-events: none;
+}
+.slide-nav .nav-label {
+  font-size: 13px;
+  font-weight: 500;
+  color: #5f6368;
+  background: rgba(255,255,255,0.9);
+  backdrop-filter: blur(10px);
+  padding: 8px 14px;
+  border-radius: 999px;
+  border: 1px solid rgba(0,0,0,0.06);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+}
+
+</style>
+<style id="fit-css">
+/* ===== SCREEN FIT ===== */
+html{overflow-x:hidden}
+body{overflow-x:hidden}
+@media (min-width:900px) and (max-height:820px){
+  .tw-slide{padding-top:28px !important;padding-bottom:24px !important;min-height:0 !important}
+}
+</style>
+</head>
+<body>
+  <div class="deck">
+
+    <div class="hero">
+      <span class="kicker"><span class="dot"></span>Turing Akademia · Soft Skills Track</span>
+      <h1 class="display">Client Communications</h1>
+      <p class="lede">How a Forward-Deployed Engineer <strong>controls the narrative</strong> with a client — across email, status reporting, and the conversations that decide whether trust grows or breaks.</p>
+    </div>
+
+    <div class="track-head">
+      <span class="track-label">The next 90 minutes</span>
+      <span class="track-total">90 min total · hover or tap a phase</span>
+    </div>
+
+    <div class="agenda has-active" id="agenda" role="list" aria-label="Session agenda">
+
+      <div class="phase intro-anim p1" role="listitem button" tabindex="0" aria-pressed="false">
+        <span class="pin-dot" aria-hidden="true"></span>
+        <div class="phase-top">
+          <div class="phase-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"></circle><polyline points="10 8 16 12 10 16"></polyline></svg>
+          </div>
+          <span class="phase-time">10 min</span>
+        </div>
+        <div class="phase-step">Phase 01</div>
+        <div class="phase-name">Introduction</div>
+        <div class="phase-desc">Get talking, establish why communication is the FDE's defining skill, and set expectations for the session.</div>
+      </div>
+
+      <div class="phase intro-anim p2" role="listitem button" tabindex="0" aria-pressed="false">
+        <span class="pin-dot" aria-hidden="true"></span>
+        <div class="phase-top">
+          <div class="phase-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24"><path d="M4 5a2 2 0 0 1 2-2h11a2 2 0 0 1 2 2v15l-4-3H6a2 2 0 0 1-2-2z"></path><line x1="8" y1="8" x2="15" y2="8"></line><line x1="8" y1="12" x2="13" y2="12"></line></svg>
+          </div>
+          <span class="phase-time">40 min</span>
+        </div>
+        <div class="phase-step">Phase 02</div>
+        <div class="phase-name">Content</div>
+        <div class="phase-desc">Five sections: controlling the narrative, email etiquette, status reporting, managing expectations, and rhythm.</div>
+      </div>
+
+      <div class="phase intro-anim p3 active" role="listitem button" tabindex="0" aria-pressed="false">
+        <span class="pin-dot" aria-hidden="true"></span>
+        <div class="phase-top">
+          <div class="phase-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+          </div>
+          <span class="phase-time">25 min</span>
+        </div>
+        <div class="phase-step">Phase 03</div>
+        <div class="phase-name">Roleplay</div>
+        <div class="phase-desc">Three live reps under real pressure — an overdue response, an uncomfortable status call, and a scope-creep request.</div>
+      </div>
+
+      <div class="phase intro-anim p4" role="listitem button" tabindex="0" aria-pressed="false">
+        <span class="pin-dot" aria-hidden="true"></span>
+        <div class="phase-top">
+          <div class="phase-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path><line x1="8" y1="9" x2="16" y2="9"></line><line x1="8" y1="13" x2="12" y2="13"></line></svg>
+          </div>
+          <span class="phase-time">15 min</span>
+        </div>
+        <div class="phase-step">Phase 04</div>
+        <div class="phase-name">Q&amp;A</div>
+        <div class="phase-desc">Open discussion on the judgment behind every difficult client message.</div>
+      </div>
+
+    </div>
+
+    <div class="deck-foot">
+      <div class="skills">
+        <span class="skills-label">Core skills</span>
+        <span class="chip">Email etiquette</span>
+        <span class="chip">Status reporting</span>
+        <span class="chip">Managing expectations</span>
+      </div>
+      <div class="audience">For <strong>FDEs</strong> in client-facing, high-stakes environments</div>
+    </div>
+
+  </div>
+
+<script>
+  (function () {
+    const agenda = document.getElementById('agenda');
+    const phases = Array.from(agenda.querySelectorAll('.phase'));
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    let idx = 0;
+    let pinned = false;
+    let cycleTimer = null, resumeTimer = null, resetTimer = null;
+
+    function setActive(i) {
+      idx = i;
+      agenda.classList.add('has-active');
+      phases.forEach((p, j) => {
+        const on = j === i;
+        p.classList.toggle('active', on);
+        p.setAttribute('aria-pressed', (on && pinned) ? 'true' : 'false');
+      });
+    }
+
+    function startCycle() {
+      if (reduceMotion || pinned) return;
+      stopCycle();
+      cycleTimer = setInterval(() => setActive((idx + 1) % phases.length), 3000);
+    }
+    function stopCycle() { clearInterval(cycleTimer); cycleTimer = null; }
+
+    function pauseForUser() { stopCycle(); clearTimeout(resumeTimer); }
+    function scheduleResume() {
+      if (pinned) return;
+      clearTimeout(resumeTimer);
+      resumeTimer = setTimeout(startCycle, 5000);
+    }
+
+    phases.forEach((phase, i) => {
+      const focusIn = () => {
+        if (pinned) return;
+        clearTimeout(resetTimer);
+        pauseForUser();
+        setActive(i);
+      };
+      const focusOut = () => {
+        if (pinned) return;
+        resetTimer = setTimeout(scheduleResume, 150);
+      };
+
+      phase.addEventListener('mouseenter', focusIn);
+      phase.addEventListener('focus', focusIn);
+      phase.addEventListener('mouseleave', focusOut);
+      phase.addEventListener('blur', focusOut);
+
+      const toggle = () => {
+        if (pinned && phase.classList.contains('active')) {
+          pinned = false;
+          phase.classList.remove('pinned');
+          setActive(i);
+          scheduleResume();
+        } else {
+          pinned = true;
+          stopCycle();
+          clearTimeout(resumeTimer);
+          phases.forEach(p => p.classList.remove('pinned'));
+          phase.classList.add('pinned');
+          setActive(i);
+        }
+      };
+      phase.addEventListener('click', toggle);
+      phase.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggle(); }
+      });
+    });
+
+    setActive(0);
+    if (!reduceMotion) setTimeout(startCycle, 3200); // let entrance settle first
+  })();
+</script>
+
+
+
+
+<div class="fit-spacer" style="height:96px" aria-hidden="true"></div>
+<div class="slide-nav">
+  <a href="slide-01.html" class="nav-btn" title="Previous"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"></polyline></svg></a>
+  <span class="nav-label">2 / 14</span>
+  <a href="slide-03.html" class="nav-btn" title="Next"><svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"></polyline></svg></a>
+</div>
+
+<script id="fit-js">
+(function(){
+  var t=null,kids=document.body.children;
+  for(var i=0;i<kids.length;i++){var k=kids[i];
+    if(/^(SCRIPT|STYLE|LINK|NOSCRIPT)$/.test(k.tagName)||k.classList.contains('slide-nav')||k.classList.contains('fit-spacer'))continue;
+    t=k;break;}
+  if(!t)return;
+  function fit(){
+    t.style.zoom=1;
+    if(window.innerWidth<900)return;
+    var h=t.getBoundingClientRect().height,avail=window.innerHeight-118;
+    if(h<=avail)return;
+    t.style.zoom=Math.max(0.72,avail/h);
+  }
+  window.addEventListener('load',fit);
+  window.addEventListener('resize',fit);
+  if(document.fonts&&document.fonts.ready)document.fonts.ready.then(fit);
+  setTimeout(fit,400);setTimeout(fit,1500);fit();
+})();
+</script>
+</body></html>

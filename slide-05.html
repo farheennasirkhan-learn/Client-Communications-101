@@ -1,0 +1,365 @@
+<html lang="en"><head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Real Skill: Controlling the Narrative</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;600&display=swap');
+
+  :root {
+    --primary: #2563eb;
+    --primary-light: #60a5fa;
+    --glow: rgba(37, 99, 235, 0.15);
+    --rose: #e11d48;
+    --rose-soft: rgba(225,29,72,0.10);
+    --rose-glow: rgba(225,29,72,0.16);
+    --bg: #ffffff;
+    --surface: #f8fafc;
+    --border: #e2e8f0;
+    --headline: #0f172a;
+    --body: #475569;
+    --muted: #94a3b8;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    background: var(--bg);
+    color: var(--body);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 56px 24px;
+    line-height: 1.6;
+  }
+
+  .deck { width: 100%; max-width: 1080px; }
+
+  /* ─── HEADER ─── */
+  .head { max-width: 760px; margin: 0 auto 40px; text-align: center; }
+  .label {
+    display: inline-flex; align-items: center; gap: 10px;
+    font-size: 11px; font-weight: 800; letter-spacing: 2px;
+    text-transform: uppercase; color: var(--primary); margin-bottom: 16px;
+    opacity: 0; animation: fadeDown 0.8s ease 0.1s both;
+  }
+  .label .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--primary); }
+  .headline {
+    font-size: 42px; font-weight: 900; letter-spacing: -0.03em;
+    line-height: 1.1; color: var(--headline); margin: 0;
+    opacity: 0; animation: fadeDown 0.8s ease 0.25s both;
+  }
+
+  /* ─── MAIN SPLIT ─── */
+  .split { display: flex; gap: 28px; align-items: stretch; margin-bottom: 28px; }
+  .col-scene { flex: 1.15; }
+  .col-diag { flex: 1; display: flex; flex-direction: column; }
+
+  /* Scene card */
+  .scene {
+    position: relative; height: 100%;
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 22px; padding: 28px 30px 30px;
+    opacity: 0; animation: scaleIn 0.7s ease 0.45s both; overflow: hidden;
+  }
+  .scene::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 6px; background: var(--primary); }
+  .scene-tag {
+    display: inline-flex; align-items: center; gap: 9px;
+    font-family: 'JetBrains Mono', monospace; font-size: 11.5px; font-weight: 600;
+    color: var(--primary); background: rgba(37,99,235,0.08);
+    border: 1px solid rgba(37,99,235,0.18); border-radius: 8px;
+    padding: 7px 12px; margin-bottom: 18px;
+  }
+  .scene-tag .live { width: 7px; height: 7px; border-radius: 50%; background: var(--rose); animation: pulse 1.8s ease-in-out infinite; }
+  .scene-body { font-size: 15px; color: var(--headline); line-height: 1.68; }
+  .scene-body .q { color: var(--body); }
+
+  /* Diagnosis */
+  .verdict {
+    display: flex; align-items: center; gap: 11px;
+    font-size: 15px; font-weight: 800; color: var(--rose);
+    margin-bottom: 14px; padding-left: 2px;
+    opacity: 0; animation: fadeDown 0.7s ease 0.6s both;
+  }
+  .verdict svg { width: 20px; height: 20px; stroke: var(--rose); fill: none; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; flex-shrink: 0; }
+
+  .diag-stack { display: flex; flex-direction: column; gap: 14px; flex: 1; }
+  .diag {
+    position: relative; --accent: var(--primary); --accent-soft: rgba(37,99,235,0.10); --accent-glow: var(--glow);
+    background: var(--bg); border: 1px solid var(--border); border-radius: 18px;
+    padding: 20px 22px; cursor: pointer; outline: none; flex: 1;
+    transition: opacity 350ms cubic-bezier(0.4,0,0.2,1), transform 350ms cubic-bezier(0.4,0,0.2,1),
+                border-color 350ms ease, box-shadow 350ms ease, filter 350ms ease;
+    opacity: 0;
+  }
+  .diag.narrative { --accent: var(--rose); --accent-soft: var(--rose-soft); --accent-glow: var(--rose-glow); }
+  .diag.intro { animation: scaleIn 0.6s ease 0.7s both; }
+  .diag.intro.d2 { animation-delay: 0.84s; }
+
+  .diag-stack.has-active .diag:not(.active) { opacity: 0.5; filter: saturate(0.5) blur(1px); transform: scale(0.985); }
+  .diag.active {
+    opacity: 1; filter: none; transform: translateY(-3px) scale(1.01);
+    border-color: var(--accent); box-shadow: 0 16px 32px -12px var(--accent-glow), 0 0 0 4px var(--accent-soft);
+  }
+
+  .diag-top { display: flex; align-items: center; gap: 12px; margin-bottom: 10px; }
+  .diag-icon { width: 38px; height: 38px; border-radius: 11px; background: var(--surface); display: flex; align-items: center; justify-content: center; transition: background 0.35s ease; flex-shrink: 0; }
+  .diag-icon svg { width: 19px; height: 19px; stroke: var(--accent); fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; transition: stroke 0.35s ease; }
+  .diag.active .diag-icon { background: var(--accent); }
+  .diag.active .diag-icon svg { stroke: #fff; }
+  .diag-title { font-size: 15.5px; font-weight: 800; color: var(--headline); letter-spacing: -0.01em; transition: color 0.35s ease; }
+  .diag.active .diag-title { color: var(--accent); }
+  .diag-body { font-size: 14px; color: var(--body); line-height: 1.55; }
+
+  .pin-dot { position: absolute; top: 13px; right: 13px; width: 8px; height: 8px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 0 4px var(--accent-soft); opacity: 0; transform: scale(0.4); transition: opacity 250ms ease, transform 250ms ease; }
+  .diag.pinned .pin-dot { opacity: 1; transform: scale(1); }
+
+  /* ─── DEFINITION ─── */
+  .definition {
+    background: var(--bg); border: 1px solid var(--border); border-radius: 18px;
+    padding: 24px 28px; margin-bottom: 22px; display: flex; gap: 18px; align-items: flex-start;
+    opacity: 0; animation: fadeDown 0.8s ease 1.0s both;
+  }
+  .def-icon { flex-shrink: 0; width: 42px; height: 42px; border-radius: 12px; background: rgba(37,99,235,0.1); display: flex; align-items: center; justify-content: center; }
+  .def-icon svg { width: 21px; height: 21px; stroke: var(--primary); fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+  .def-text { font-size: 15.5px; color: var(--body); line-height: 1.62; }
+  .def-text .em { color: var(--headline); font-weight: 700; }
+
+  /* ─── THE STANDARD ─── */
+  .standard {
+    position: relative; background: var(--primary); border-radius: 22px;
+    padding: 34px 36px; overflow: hidden; color: #fff;
+    box-shadow: 0 24px 48px -18px var(--glow);
+    opacity: 0; animation: fadeDown 0.8s ease 1.15s both;
+  }
+  .standard::after { content: ''; position: absolute; right: -60px; top: -60px; width: 220px; height: 220px; border-radius: 50%; background: rgba(255,255,255,0.07); }
+  .std-eyebrow { display: inline-flex; align-items: center; gap: 9px; font-size: 11px; font-weight: 800; letter-spacing: 2px; text-transform: uppercase; color: rgba(255,255,255,0.8); margin-bottom: 14px; position: relative; z-index: 2; }
+  .std-eyebrow .mark { width: 26px; height: 26px; border-radius: 50%; background: rgba(255,255,255,0.16); display: flex; align-items: center; justify-content: center; animation: breathe 3.4s ease-in-out infinite; }
+  .std-eyebrow .mark svg { width: 14px; height: 14px; stroke: #fff; fill: none; stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; }
+  .std-statement { font-size: 25px; font-weight: 800; letter-spacing: -0.02em; line-height: 1.3; margin: 0 0 12px; position: relative; z-index: 2; }
+  .std-close { font-size: 15px; color: rgba(255,255,255,0.82); position: relative; z-index: 2; }
+
+  /* ─── KEYFRAMES ─── */
+  @keyframes fadeDown { from { opacity: 0; transform: translateY(-18px); } to { opacity: 1; transform: translateY(0); } }
+  @keyframes scaleIn  { from { opacity: 0; transform: scale(0.94); } to { opacity: 1; transform: scale(1); } }
+  @keyframes breathe  { 0%,100% { transform: scale(1); } 50% { transform: scale(1.12); } }
+  @keyframes pulse    { 0%,100% { opacity: 1; box-shadow: 0 0 0 0 rgba(225,29,72,0.5); } 50% { opacity: 0.6; box-shadow: 0 0 0 5px rgba(225,29,72,0); } }
+
+  /* ─── RESPONSIVE ─── */
+  @media (max-width: 860px) {
+    .headline { font-size: 33px; }
+    .split { flex-direction: column; }
+    .definition { flex-direction: column; gap: 12px; }
+    .std-statement { font-size: 21px; }
+  }
+  @media (max-width: 540px) {
+    body { padding: 40px 18px; }
+    .headline { font-size: 28px; }
+    .scene { padding: 24px 22px; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation: none !important; transition: none !important; }
+  }
+
+
+
+
+
+/* ===== SLIDE NAV ===== */
+.slide-nav {
+  position: fixed;
+  bottom: 28px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  z-index: 9999;
+  font-family: 'Poppins', system-ui, sans-serif;
+}
+.slide-nav .nav-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  border-radius: 14px;
+  background: #111;
+  color: #fff;
+  text-decoration: none;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 14px rgba(0,0,0,0.25);
+}
+.slide-nav .nav-btn:hover {
+  background: #333;
+  transform: scale(1.06);
+}
+.slide-nav .nav-btn svg {
+  width: 22px;
+  height: 22px;
+  fill: none;
+  stroke: #fff;
+  stroke-width: 2.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.slide-nav .nav-disabled {
+  opacity: 0.25;
+  pointer-events: none;
+}
+.slide-nav .nav-label {
+  font-size: 13px;
+  font-weight: 500;
+  color: #5f6368;
+  background: rgba(255,255,255,0.9);
+  backdrop-filter: blur(10px);
+  padding: 8px 14px;
+  border-radius: 999px;
+  border: 1px solid rgba(0,0,0,0.06);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+}
+
+</style>
+<style id="fit-css">
+/* ===== SCREEN FIT ===== */
+html{overflow-x:hidden}
+body{overflow-x:hidden}
+@media (min-width:900px) and (max-height:820px){
+  .tw-slide{padding-top:28px !important;padding-bottom:24px !important;min-height:0 !important}
+}
+</style>
+</head>
+<body>
+  <div class="deck">
+
+    <div class="head">
+      <span class="label"><span class="dot"></span>Section 01 · The real skill</span>
+      <h1 class="headline">Controlling the narrative</h1>
+    </div>
+
+    <div class="split">
+      <div class="col-scene">
+        <div class="scene">
+          <span class="scene-tag"><span class="live"></span>Scene · Week 4 — GenAI deployment, US logistics company</span>
+          <div class="scene-body">An FDE has hit a real blocker. The client's internal data pipeline is producing malformed JSON that's breaking the retrieval layer. The FDE knows about it. They've been working on a fix for two days. They haven't mentioned it to the client because they wanted to resolve it first before <span class="q">"worrying anyone."</span> On Friday, the client's VP of Technology joins the weekly call and asks why the demo environment is still down. The FDE is caught off guard. The VP isn't upset about the bug. <span class="def-em" style="color:var(--headline);font-weight:700;">He's upset that he found out this way.</span></div>
+        </div>
+      </div>
+
+      <div class="col-diag">
+        <div class="verdict">
+          <svg viewBox="0 0 24 24"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+          That story is a communication failure.
+        </div>
+
+        <div class="diag-stack has-active" id="diag" role="list">
+          <div class="diag tech intro d1" role="listitem button" tabindex="0" aria-pressed="false">
+            <span class="pin-dot" aria-hidden="true"></span>
+            <div class="diag-top">
+              <div class="diag-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><polyline points="16 18 22 12 16 6"></polyline><polyline points="8 6 2 12 8 18"></polyline></svg></div>
+              <div class="diag-title">The technical work was right</div>
+            </div>
+            <div class="diag-body">The FDE did everything right technically: they identified the issue, were fixing it, and had a plan.</div>
+          </div>
+
+          <div class="diag narrative intro d2 active" role="listitem button" tabindex="0" aria-pressed="false">
+            <span class="pin-dot" aria-hidden="true"></span>
+            <div class="diag-top">
+              <div class="diag-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M3.5 3.5 20.5 20.5"></path><path d="M12 2a10 10 0 0 1 10 10c0 .5-.04.99-.12 1.47"></path><path d="M19.5 19.5A10 10 0 0 1 2 12c0-2.2.71-4.23 1.9-5.88"></path></svg></div>
+              <div class="diag-title">The narrative was lost</div>
+            </div>
+            <div class="diag-body">They lost the client's confidence because they didn't control the narrative.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="definition">
+      <div class="def-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg></div>
+      <div class="def-text">Client communication isn't about being polite, sending timely updates, or formatting emails correctly, though all of that matters. <span class="em">It's about making sure the client always knows where things stand, what the risks are, and what's being done about them. Before they have to ask.</span></div>
+    </div>
+
+    <div class="standard">
+      <span class="std-eyebrow"><span class="mark" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg></span>The standard every FDE is held to</span>
+      <p class="std-statement">If a client is surprised, it's a communication failure — regardless of whether the technical work was excellent.</p>
+      <div class="std-close">Everything in this session is in service of meeting this standard.</div>
+    </div>
+
+  </div>
+
+<script>
+  (function () {
+    const wrap = document.getElementById('diag');
+    const items = Array.from(wrap.querySelectorAll('.diag'));
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    let idx = 0, pinned = false;
+    let cycleTimer = null, resumeTimer = null, resetTimer = null;
+
+    function setActive(i) {
+      idx = i;
+      wrap.classList.add('has-active');
+      items.forEach((it, j) => {
+        const on = j === i;
+        it.classList.toggle('active', on);
+        it.setAttribute('aria-pressed', (on && pinned) ? 'true' : 'false');
+      });
+    }
+    function startCycle() { if (reduceMotion || pinned) return; stopCycle(); cycleTimer = setInterval(() => setActive((idx + 1) % items.length), 3000); }
+    function stopCycle() { clearInterval(cycleTimer); cycleTimer = null; }
+    function pauseForUser() { stopCycle(); clearTimeout(resumeTimer); }
+    function scheduleResume() { if (pinned) return; clearTimeout(resumeTimer); resumeTimer = setTimeout(startCycle, 5000); }
+
+    items.forEach((it, i) => {
+      const focusIn = () => { if (pinned) return; clearTimeout(resetTimer); pauseForUser(); setActive(i); };
+      const focusOut = () => { if (pinned) return; resetTimer = setTimeout(scheduleResume, 150); };
+      it.addEventListener('mouseenter', focusIn);
+      it.addEventListener('focus', focusIn);
+      it.addEventListener('mouseleave', focusOut);
+      it.addEventListener('blur', focusOut);
+      const toggle = () => {
+        if (pinned && it.classList.contains('active')) { pinned = false; it.classList.remove('pinned'); setActive(i); scheduleResume(); }
+        else { pinned = true; stopCycle(); clearTimeout(resumeTimer); items.forEach(x => x.classList.remove('pinned')); it.classList.add('pinned'); setActive(i); }
+      };
+      it.addEventListener('click', toggle);
+      it.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggle(); } });
+    });
+
+    setActive(0);
+    if (!reduceMotion) setTimeout(startCycle, 3000);
+  })();
+</script>
+
+
+
+
+<div class="fit-spacer" style="height:96px" aria-hidden="true"></div>
+<div class="slide-nav">
+  <a href="slide-04.html" class="nav-btn" title="Previous"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"></polyline></svg></a>
+  <span class="nav-label">5 / 14</span>
+  <a href="slide-06.html" class="nav-btn" title="Next"><svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"></polyline></svg></a>
+</div>
+
+<script id="fit-js">
+(function(){
+  var t=null,kids=document.body.children;
+  for(var i=0;i<kids.length;i++){var k=kids[i];
+    if(/^(SCRIPT|STYLE|LINK|NOSCRIPT)$/.test(k.tagName)||k.classList.contains('slide-nav')||k.classList.contains('fit-spacer'))continue;
+    t=k;break;}
+  if(!t)return;
+  function fit(){
+    t.style.zoom=1;
+    if(window.innerWidth<900)return;
+    var h=t.getBoundingClientRect().height,avail=window.innerHeight-118;
+    if(h<=avail)return;
+    t.style.zoom=Math.max(0.72,avail/h);
+  }
+  window.addEventListener('load',fit);
+  window.addEventListener('resize',fit);
+  if(document.fonts&&document.fonts.ready)document.fonts.ready.then(fit);
+  setTimeout(fit,400);setTimeout(fit,1500);fit();
+})();
+</script>
+</body></html>
